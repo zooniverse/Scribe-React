@@ -48,9 +48,9 @@ ImageContainer = React.createClass
 
 SubjectImage = React.createClass
   displayName: 'SubjectImage'
-  # getInitialState: ->
-  #   console.log 'getInitialState()'
-  #   url: "foo.jpg"
+  getInitialState: ->
+    null
+
   render: ->
     <img src={@props.url} />
 
