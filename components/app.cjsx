@@ -4,6 +4,8 @@ React = require 'react'
 {Router, Routes, Route, Link} = require 'react-router'
 # require components here:
 
+ImageSubjectViewer = require './image-subject-viewer'
+
 SampleComponent = React.createClass
   displayName: 'SampleComponent'
 
@@ -14,6 +16,8 @@ SampleComponent = React.createClass
       <p>Give them a route with name & path props and link to that path here:</p>
       <ul>
         <li><Link to="root">This will go nowhere....</Link></li>
+        <li><Link to="image-subject-viewer">Image Subject Viewer</Link></li>
+
       </ul>
     </div>
 
@@ -21,6 +25,8 @@ Main = React.createClass
   render: ->
     <Routes>
       <Route path="/" name="root" handler={SampleComponent} />
+      <Route path="/images" name="image-subject-viewer" handler={ImageSubjectViewer} />
+
     </Routes>
 
 React.renderComponent Main(null), document.body
