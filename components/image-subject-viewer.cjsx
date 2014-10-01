@@ -3,6 +3,8 @@ React                         = require 'react'
 example_subjects              = require '../lib/example_subject.json'
 $                             = require '../lib/jquery-2.1.0.min.js'
 
+DEBUG = false
+
 module.exports = 
 
 # the top-level component
@@ -12,33 +14,41 @@ ImageSubjectViewer = React.createClass
   render: ->
     <div className="image-subject-viewer">
       <h1>Image Subject Viewer</h1>
-      <ImageContainer url="https://api.zooniverse.org/projects/galaxy_zoo/groups/50251c3b516bcb6ecb000002/subjects?limit=5" />
+      <SubjectContainer endpoint="https://api.zooniverse.org/projects/galaxy_zoo/groups/50251c3b516bcb6ecb000002/subjects?limit=5" />
       <MarkingSurface />
+      <ActionButton />
       <Link to="root">Go back.</Link>
     </div>
 
-ImageContainer = React.createClass
-  displayName: 'ImageContainer'
+SubjectContainer = React.createClass
+  displayName: 'SubjectContainer'
+
   getInitialState: ->
-    console.log 'getInitialState()'
     subjects: example_subjects
 
   componentDidMount: ->
-    console.log 'componentDidMount()'
     $.ajax
-      url: @props.url
+      url: @props.endpoint
       dataType: "json"
       success: ((data) ->
         @setState subjects: data
-        console.log 'LOADED SUBJECTS: ', data
+        @setState subj_count: data.length
+        @setState subj_curr: 0
+        if DEBUG
+          console.log "LOADED SUBJECTS #{@state.subj_count}:", data
+          console.log "SETTING CURRENT SUBJECT TO #{@state.subj_curr}"
         return
       ).bind(this)
       error: ((xhr, status, err) ->
-        console.log 'ERROR! Could not load subject.'
-        # console.error @props.url, status, err.toString()
+        console.error "Error loading subjects: ", @props.endpoint, status, err.toString()
         return
       ).bind(this)
     return
+
+  showNextImage: ->
+    return if @state.subj_curr < @state.subj_count
+    @setState
+
 
   render: ->
     <div>
@@ -47,13 +57,19 @@ ImageContainer = React.createClass
     </div>
 
 SubjectImage = React.createClass
-  displayName: 'SubjectImage'
   getInitialState: ->
     null
 
   render: ->
     <img src={@props.url} />
 
+ActionButton = React.createClass
+  displayName: "ActionButton"
+
+  getInitialState: ->
+    label: "NEXT"
+  render: ->
+    <button className="action-button">{@state.label}</button>
 
 # NOT BEING USED (YET!)
 MarkingSurface = React.createClass
