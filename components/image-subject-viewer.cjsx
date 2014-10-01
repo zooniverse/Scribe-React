@@ -12,19 +12,41 @@ ImageSubjectViewer = React.createClass
   render: ->
     <div className="image-subject-viewer">
       <h1>Image Subject Viewer</h1>
-      <ImageContainer />
+      <ImageContainer url="https://api.zooniverse.org/projects/galaxy_zoo/groups/50251c3b516bcb6ecb000002/subjects?limit=5" />
       <MarkingSurface />
       <Link to="root">Go back.</Link>
     </div>
 
 ImageContainer = React.createClass
   displayName: 'ImageContainer'
+  getInitialState: ->
+    console.log 'getInitialState()'
+    data: []
+
+  componentDidMount: ->
+    console.log 'componentDidMount()'
+    $.ajax
+      url: @props.url
+      dataType: "json"
+      success: ((data) ->
+        @setState example_subjects: data
+        console.log 'EXAMPLE_SUBJECTS: ', example_subjects
+        return
+      ).bind(this)
+      error: ((xhr, status, err) ->
+        console.log 'ERROR! Could not load subject.'
+        # console.error @props.url, status, err.toString()
+        return
+      ).bind(this)
+    return
+
   render: ->
     <div>
       <h3>This is the image</h3>
       <img src={example_subjects[0].location.standard} />
     </div>
 
+# NOT BEING USED (YET!)
 MarkingSurface = React.createClass
   displayName: 'MarkingSurface'
   render: ->
