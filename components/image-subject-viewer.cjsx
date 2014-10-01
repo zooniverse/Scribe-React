@@ -7,7 +7,8 @@ DEBUG = false
 
 module.exports = 
 
-# the top-level component
+######################################
+
 ImageSubjectViewer = React.createClass
   displayName: 'ImageSubjectViewer'
 
@@ -20,23 +21,26 @@ ImageSubjectViewer = React.createClass
       <Link to="root">Go back.</Link>
     </div>
 
+######################################
+
 SubjectContainer = React.createClass
   displayName: 'SubjectContainer'
 
   getInitialState: ->
     subjects: example_subjects
+    subject_img_url: "http://sierrafire.cr.usgs.gov/images/loading.gif"
+
 
   componentDidMount: ->
+    @fetchSubjects()
+
+  fetchSubjects: ->
     $.ajax
       url: @props.endpoint
       dataType: "json"
       success: ((data) ->
         @setState subjects: data
-        @setState subj_count: data.length
-        @setState subj_curr: 0
-        if DEBUG
-          console.log "LOADED SUBJECTS #{@state.subj_count}:", data
-          console.log "SETTING CURRENT SUBJECT TO #{@state.subj_curr}"
+        @setState subject_img_url: data[0].location.standard
         return
       ).bind(this)
       error: ((xhr, status, err) ->
@@ -45,20 +49,20 @@ SubjectContainer = React.createClass
       ).bind(this)
     return
 
+  selectSubject: ->
+
   showNextImage: ->
-    return if @state.subj_curr < @state.subj_count
-    @setState
-
-
+    return #if @state.subj_idx < @state.subj_count
+    
   render: ->
     <div>
       <h3>This is the image</h3>
-      <SubjectImage url={@state.subjects[0].location.standard} />
+      <SubjectImage url={@state.subject_img_url} />
     </div>
 
+######################################
+
 SubjectImage = React.createClass
-  getInitialState: ->
-    null
 
   render: ->
     <img src={@props.url} />
@@ -68,9 +72,17 @@ ActionButton = React.createClass
 
   getInitialState: ->
     label: "NEXT"
-  render: ->
-    <button className="action-button">{@state.label}</button>
 
+  handleSubmit: (e) ->
+    e.preventDefault() # prevent browser's default submit action
+    console.log 'idx: ', @state.idx
+
+  render: ->
+    <form onSubmit={@handleSubmit}>
+      <input type="submit" className="action-button" value={@state.label} />
+    </form>
+
+######################################
 # NOT BEING USED (YET!)
 MarkingSurface = React.createClass
   displayName: 'MarkingSurface'
