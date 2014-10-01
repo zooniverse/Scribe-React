@@ -21,7 +21,7 @@ ImageContainer = React.createClass
   displayName: 'ImageContainer'
   getInitialState: ->
     console.log 'getInitialState()'
-    data: []
+    subjects: []
 
   componentDidMount: ->
     console.log 'componentDidMount()'
@@ -29,8 +29,8 @@ ImageContainer = React.createClass
       url: @props.url
       dataType: "json"
       success: ((data) ->
-        @setState example_subjects: data
-        console.log 'EXAMPLE_SUBJECTS: ', example_subjects
+        @setState subjects: data
+        console.log 'EXAMPLE_SUBJECTS: ', data
         return
       ).bind(this)
       error: ((xhr, status, err) ->
@@ -41,9 +41,10 @@ ImageContainer = React.createClass
     return
 
   render: ->
+    console.log 'render()', @state.subjects[0]
     <div>
       <h3>This is the image</h3>
-      <img src={example_subjects[0].location.standard} />
+      <img src={@state.subjects[0].location.standard} />
     </div>
 
 # NOT BEING USED (YET!)
@@ -53,31 +54,5 @@ MarkingSurface = React.createClass
     <div>
       <h3>This is the marking surface</h3>
     </div>
-
-Subject = React.createClass
-  displayName: 'Subject'
-  render: ->
-    return
-  loadCommentsFromServer: ->
-    return
-    $.ajax
-      url: "https://api.zooniverse.org/projects/galaxy_zoo/groups/50251c3b516bcb6ecb000002/subjects?limit=5"
-      dataType: "json"
-      success: ((data) ->
-        @setState data: data
-        return
-      ).bind(this)
-      # error: ((xhr, status, err) ->
-      #   console.error @props.url, status, err.toString()
-      #   return
-      # ).bind(this)
-    return
-  getInitialState: ->
-    data: []
-  # componentDidMount: ->
-  #   @loadCommentsFromServer()
-  #   setInterval @loadCommentsFromServer, @props.pollInterval
-  #   return
-
 
 window.React = React
