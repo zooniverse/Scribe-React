@@ -17,7 +17,6 @@ SampleComponent = React.createClass
       <ul>
         <li><Link to="root">This will go nowhere....</Link></li>
         <li><Link to="image-subject-viewer">Image Subject Viewer</Link></li>
-
       </ul>
     </div>
 
