@@ -30,7 +30,7 @@ ImageContainer = React.createClass
       dataType: "json"
       success: ((data) ->
         @setState subjects: data
-        console.log 'EXAMPLE_SUBJECTS: ', data
+        console.log 'LOADED SUBJECTS: ', data
         return
       ).bind(this)
       error: ((xhr, status, err) ->
@@ -41,11 +41,19 @@ ImageContainer = React.createClass
     return
 
   render: ->
-    console.log 'render()', @state.subjects[0]
     <div>
       <h3>This is the image</h3>
-      <img src={@state.subjects[0].location.standard} />
+      <SubjectImage url={@state.subjects[0].location.standard} />
     </div>
+
+SubjectImage = React.createClass
+  displayName: 'SubjectImage'
+  # getInitialState: ->
+  #   console.log 'getInitialState()'
+  #   url: "foo.jpg"
+  render: ->
+    <img src={@props.url} />
+
 
 # NOT BEING USED (YET!)
 MarkingSurface = React.createClass
