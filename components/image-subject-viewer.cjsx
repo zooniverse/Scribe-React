@@ -16,9 +16,8 @@ ImageSubjectViewer = React.createClass
     <div className="image-subject-viewer">
       <h1>Image Subject Viewer</h1>
       <SubjectContainer endpoint="https://api.zooniverse.org/projects/galaxy_zoo/groups/50251c3b516bcb6ecb000002/subjects?limit=5" />
-      <MarkingSurface />
       <ActionButton />
-      <Link to="root">Go back.</Link>
+      <Link to="root">Go back to main page...</Link>
     </div>
 
 ######################################
@@ -55,7 +54,7 @@ SubjectContainer = React.createClass
     return #if @state.subj_idx < @state.subj_count
     
   render: ->
-    <div>
+    <div className="subject-container">
       <h3>This is the image</h3>
       <SubjectImage url={@state.subject_img_url} />
     </div>
@@ -81,14 +80,5 @@ ActionButton = React.createClass
     <form onSubmit={@handleSubmit}>
       <input type="submit" className="action-button" value={@state.label} />
     </form>
-
-######################################
-# NOT BEING USED (YET!)
-MarkingSurface = React.createClass
-  displayName: 'MarkingSurface'
-  render: ->
-    <div>
-      <h3>This is the marking surface</h3>
-    </div>
 
 window.React = React
