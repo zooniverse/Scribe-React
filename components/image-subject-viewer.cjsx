@@ -21,7 +21,7 @@ ImageContainer = React.createClass
   displayName: 'ImageContainer'
   getInitialState: ->
     console.log 'getInitialState()'
-    subjects: []
+    subjects: example_subjects
 
   componentDidMount: ->
     console.log 'componentDidMount()'
