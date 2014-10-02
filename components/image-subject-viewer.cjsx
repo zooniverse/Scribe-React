@@ -13,7 +13,7 @@ ImageSubjectViewer = React.createClass
     @refs.subcontainer.updateMe()
 
   render: ->
-    endpoint = "http://localhost:3000/workflows/533cd4dd4954738018030000/subjects.json?limit=5"
+    endpoint = "http://localhost:3000/workflows/533cd4dd4954738018030000/subjects.json?limit=10"
     <div className="image-subject-viewer">
       <h1>Image Subject Viewer</h1>
       <SubjectContainer ref='subcontainer' endpoint=endpoint />
@@ -38,6 +38,7 @@ SubjectContainer = React.createClass
     @fetchSubjects()
 
   fetchSubjects: ->
+    @setState subject_img_url: "http://sierrafire.cr.usgs.gov/images/loading.gif"
 
     $.ajax
       url: @props.endpoint
@@ -46,7 +47,12 @@ SubjectContainer = React.createClass
         @setState subjects        : data
         @setState curr_subject    : data[0]
         @setState subject_img_url : data[0].location
-        @setState meta_data        : data[0].meta_data
+        @setState meta_data       : data[0].meta_data
+
+        # pre-load images
+        for subject, i in data
+          tmp = new Image()
+          tmp.src = subject.location 
 
         return
       ).bind(this)
@@ -55,6 +61,7 @@ SubjectContainer = React.createClass
         return
       ).bind(this)
     return
+
 
   selectNextSubject: () ->
     if @state.subjects.shift() is undefined or @state.subjects.length <= 0
