@@ -3,8 +3,6 @@ React                         = require 'react'
 example_subjects              = require '../lib/example_subject.json'
 $                             = require '../lib/jquery-2.1.0.min.js'
 
-DEBUG = true
-
 module.exports = 
 
 ######################################
@@ -39,11 +37,6 @@ SubjectContainer = React.createClass
     @fetchSubjects()
 
   fetchSubjects: ->
-    if DEBUG
-      console.log 'Fetching subjects...'
-
-    # @setState subject_img_url : "http://sierrafire.cr.usgs.gov/images/loading.gif"
-
 
     $.ajax
       url: @props.endpoint
@@ -54,16 +47,6 @@ SubjectContainer = React.createClass
         @setState subject_img_url : data[0].location.standard
         @setState metadata        : data[0].metadata
 
-        for subject, i in data
-          console.log 'SUBJECT ID: ', subject.zooniverse_id
-
-        console.log 'CURRENT SUBJECT: ', @state.curr_subject.zooniverse_id
-        console.log 'SUBJECTS: ', @state.subjects
-
-        console.log 'STATE: ', @state
-
-        # @selectNextSubject()
-
         return
       ).bind(this)
       error: ((xhr, status, err) ->
@@ -73,24 +56,13 @@ SubjectContainer = React.createClass
     return
 
   selectNextSubject: () ->
-    console.log "selectNextSubject()"
-    console.log "***************************************"
-    console.log 'SUBJECTS: ', @state.subjects
-
     if @state.subjects.shift() is undefined or @state.subjects.length <= 0
-      console.log 'ran out of subjects. fetching more...'
       @fetchSubjects()
       return
     else
-      console.log 'STATE: ', @state
-
       @setState curr_subject: @state.subjects[0]
       @setState subject_img_url: @state.subjects[0].location.standard
       @setState metadata: @state.subjects[0].metadata
-
-
-  
-    console.log 'CURRENT SUBJECT: ', @state.subjects[0].zooniverse_id
     
   render: ->
     <div className="subject-container">
@@ -109,7 +81,6 @@ SubjectImage = React.createClass
 SubjectMetadata = React.createClass
 
   render: ->
-    console.log 'PROP.METADATA: ', @props.metadata
     <div className="subject-metadata">
       <h3>Metadata</h3>
       <ul>
