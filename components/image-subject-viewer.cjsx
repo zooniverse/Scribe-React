@@ -9,16 +9,11 @@ module.exports =
 
 ImageSubjectViewer = React.createClass
   displayName: 'ImageSubjectViewer'
-  nextSubject:->
-    @refs.subcontainer.updateMe()
 
   render: ->
-    endpoint = "http://localhost:3000/workflows/533cd4dd4954738018030000/subjects.json?limit=10"
+    endpoint = "http://localhost:3000/workflows/533cd4dd4954738018030000/subjects.json?limit=5"
     <div className="image-subject-viewer">
-      <h1>Image Subject Viewer</h1>
-      <SubjectContainer ref='subcontainer' endpoint=endpoint />
-      <ActionButton onActionSubmit={@nextSubject} />
-      <Link to="root">Go back to main page...</Link>
+      <SubjectContainer ref='subject_container' endpoint=endpoint />
     </div>
 
 ######################################
@@ -28,17 +23,12 @@ SubjectContainer = React.createClass
 
   getInitialState: ->
     subjects: example_subjects
-    subject_img_url: "http://sierrafire.cr.usgs.gov/images/loading.gif"
     meta_data: "Blah"
-
-  updateMe: ->
-    @selectNextSubject()
 
   componentDidMount: ->
     @fetchSubjects()
 
   fetchSubjects: ->
-    @setState subject_img_url: "http://sierrafire.cr.usgs.gov/images/loading.gif"
 
     $.ajax
       url: @props.endpoint
@@ -74,24 +64,39 @@ SubjectContainer = React.createClass
     
   render: ->
     <div className="subject-container">
-      <SubjectImage url={@state.subject_img_url} />
-      <SubjectMetadata id={@state.subjects[0].zooniverse_id} meta_data={@state.meta_data} />
+      <MarkingSurface url={@state.subject_img_url} />
+      <div className="subject-ui">
+        <SubjectMetadata id={@state.subjects[0].zooniverse_id} meta_data={@state.meta_data} />
+        <ActionButton onActionSubmit={@selectNextSubject} />
+      </div>
     </div>
 
 ######################################
 
-SubjectImage = React.createClass
+MarkingSurface = React.createClass
+
+  handleClick: (e) ->
+    console.log "clicked: (#{e.nativeEvent.offsetX},#{e.nativeEvent.offsetY})"
+    # mark.push([x: e.nativeElement.offsetX, y: e.nativeElement.offsetY])
+
   render: ->
-    <img src={@props.url} />
+    <div className="marking-surface">
+      <img src={@props.url} onClick={@handleClick} />
+      <div className="marks-container"></div>
+    </div>
+
 
 ######################################
 
 SubjectMetadata = React.createClass
 
   render: ->
-    <div className="subject-meta_data">
+    <div className="subject-metadata">
       <h3>Metadata</h3>
     </div>
+
+Mark = React.createClass
+
 
 ######################################
 
