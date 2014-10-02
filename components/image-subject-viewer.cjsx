@@ -113,9 +113,18 @@ SubjectMetadata = React.createClass
     <div className="subject-metadata">
       <h3>Metadata</h3>
       <ul>
-        <li>ID: {@props.id}</li>
-        <li>Absolute Size: {@props.metadata.absolute_size}</li>
-        <li>Red Shift: {@props.metadata.redshift}</li>
+        <li>
+          <span classname="meta-field">ID: </span> 
+          <span className="meta-value">{@props.id}</span>
+        </li>
+        <li>
+          <span classname="meta-field">Absolute Size: </span> 
+          <span className="meta-value">{@props.metadata.absolute_size}</span> 
+        </li>
+        <li>
+          <span classname="meta-field">Red Shift: </span> 
+          <span className="meta-value">{@props.metadata.redshift}</span> 
+        </li>
       </ul>
     </div>
 
