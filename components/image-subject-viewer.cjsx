@@ -13,9 +13,10 @@ ImageSubjectViewer = React.createClass
     @refs.subcontainer.updateMe()
 
   render: ->
+    endpoint = "http://localhost:3000/workflows/533cd4dd4954738018030000/subjects.json?limit=5"
     <div className="image-subject-viewer">
       <h1>Image Subject Viewer</h1>
-      <SubjectContainer ref='subcontainer' endpoint="https://api.zooniverse.org/projects/galaxy_zoo/groups/50251c3b516bcb6ecb000002/subjects?limit=5" />
+      <SubjectContainer ref='subcontainer' endpoint=endpoint />
       <ActionButton onActionSubmit={@nextSubject} />
       <Link to="root">Go back to main page...</Link>
     </div>
@@ -28,7 +29,7 @@ SubjectContainer = React.createClass
   getInitialState: ->
     subjects: example_subjects
     subject_img_url: "http://sierrafire.cr.usgs.gov/images/loading.gif"
-    metadata: "Blah"
+    meta_data: "Blah"
 
   updateMe: ->
     @selectNextSubject()
@@ -44,8 +45,8 @@ SubjectContainer = React.createClass
       success: ((data) ->
         @setState subjects        : data
         @setState curr_subject    : data[0]
-        @setState subject_img_url : data[0].location.standard
-        @setState metadata        : data[0].metadata
+        @setState subject_img_url : data[0].location
+        @setState meta_data        : data[0].meta_data
 
         return
       ).bind(this)
@@ -61,13 +62,13 @@ SubjectContainer = React.createClass
       return
     else
       @setState curr_subject: @state.subjects[0]
-      @setState subject_img_url: @state.subjects[0].location.standard
-      @setState metadata: @state.subjects[0].metadata
+      @setState subject_img_url: @state.subjects[0].location
+      @setState meta_data: @state.subjects[0].meta_data
     
   render: ->
     <div className="subject-container">
       <SubjectImage url={@state.subject_img_url} />
-      <SubjectMetadata id={@state.subjects[0].zooniverse_id} metadata={@state.metadata} />
+      <SubjectMetadata id={@state.subjects[0].zooniverse_id} meta_data={@state.meta_data} />
     </div>
 
 ######################################
@@ -81,22 +82,8 @@ SubjectImage = React.createClass
 SubjectMetadata = React.createClass
 
   render: ->
-    <div className="subject-metadata">
+    <div className="subject-meta_data">
       <h3>Metadata</h3>
-      <ul>
-        <li>
-          <span classname="meta-field">ID: </span> 
-          <span className="meta-value">{@props.id}</span>
-        </li>
-        <li>
-          <span classname="meta-field">Absolute Size: </span> 
-          <span className="meta-value">{@props.metadata.absolute_size}</span> 
-        </li>
-        <li>
-          <span classname="meta-field">Red Shift: </span> 
-          <span className="meta-value">{@props.metadata.redshift}</span> 
-        </li>
-      </ul>
     </div>
 
 ######################################
