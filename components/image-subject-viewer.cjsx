@@ -29,7 +29,6 @@ SubjectContainer = React.createClass
     @fetchSubjects()
 
   fetchSubjects: ->
-
     $.ajax
       url: @props.endpoint
       dataType: "json"
@@ -53,7 +52,7 @@ SubjectContainer = React.createClass
     return
 
 
-  selectNextSubject: () ->
+  nextSubject: () ->
     if @state.subjects.shift() is undefined or @state.subjects.length <= 0
       @fetchSubjects()
       return
@@ -67,7 +66,7 @@ SubjectContainer = React.createClass
       <MarkingSurface url={@state.subject_img_url} />
       <div className="subject-ui">
         <SubjectMetadata id={@state.subjects[0].zooniverse_id} meta_data={@state.meta_data} />
-        <ActionButton onActionSubmit={@selectNextSubject} />
+        <ActionButton onActionSubmit={@nextSubject} />
       </div>
     </div>
 
@@ -81,7 +80,7 @@ MarkingSurface = React.createClass
 
   render: ->
     <div className="marking-surface">
-      <img src={@props.url} onClick={@handleClick} />
+      <img className="subject-image" src={@props.url} onClick={@handleClick} />
       <div className="marks-container"></div>
     </div>
 
@@ -91,7 +90,7 @@ MarkingSurface = React.createClass
 SubjectMetadata = React.createClass
 
   render: ->
-    <div className="subject-metadata">
+    <div className="metadata">
       <h3>Metadata</h3>
     </div>
 

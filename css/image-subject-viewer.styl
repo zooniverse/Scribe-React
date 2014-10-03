@@ -1,19 +1,35 @@
 .image-subject-viewer
-  // background-color #000
   text-align center
-  width 100%
-  h1
-    color red
-  .subject-container
-    img
-      width 840px
+  // width 100%
+  
+  .subject-container    
+    background-color #fff
+  
+    .marking-surface
+      width 900px
+      
+      height 90vh //700px
+      text-align center
+      display inline-block
+      overflow-y scroll
+      background-color #000
+
+
+      .subject-image
+        width 840px
+        bottom 96px
+    
     .subject-ui
       background-color rgba(0,0,0,0.75)
       position fixed
       bottom 0px
       width 100%
-      height 96px
-      .subject-metadata
+      height 10vh //96px
+
+      .action-button
+        margin 10px
+      
+      .metadata
         position fixed
         display block
         text-align left
@@ -21,12 +37,11 @@
           margin 20px
           color #fff
           text-align left
-        .meta-field
+        .field
           color blue
           font-size 14px
-        .meta-value
+        .value
           color red
           font-size 12px
           font-style italic
-      .action-button
-        margin 10px
+      
