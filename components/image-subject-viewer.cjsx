@@ -3,6 +3,9 @@ React                         = require 'react'
 example_subjects              = require '../lib/example_subject.json'
 $                             = require '../lib/jquery-2.1.0.min.js'
 
+
+marks = []
+
 module.exports = 
 
 ######################################
@@ -70,32 +73,60 @@ SubjectContainer = React.createClass
       </div>
     </div>
 
+
 ######################################
 
 MarkingSurface = React.createClass
+  displayName: "MarkingSurface"
+
 
   handleClick: (e) ->
-    console.log "clicked: (#{e.nativeEvent.offsetX},#{e.nativeEvent.offsetY})"
-    # mark.push([x: e.nativeElement.offsetX, y: e.nativeElement.offsetY])
+    @addMark( e.nativeEvent.pageX, e.nativeEvent.pageY )
+    # console.log "SCROLL TOP:", @getDOMNode().scrollTop
+    
+  addMark: (x,y) ->
+    marks.push 
+      x: x
+      y: y
+      wid: 100
+      hei: 100
+    @forceUpdate()
 
   render: ->
     <div className="marking-surface">
       <img className="subject-image" src={@props.url} onClick={@handleClick} />
-      <div className="marks-container"></div>
+      <MarksList mark_list={marks} />
     </div>
 
+######################################
+
+MarksList = React.createClass
+  displayName: "MarksList"
+
+  render: ->
+    <div className="marks-list">
+      {@props.mark_list.map((mark) ->
+        <Mark xpos={mark.x} ypos={mark.y} wid={mark.wid} hei={mark.hei} />
+      )}
+    </div>
+
+######################################
+
+Mark = React.createClass
+  displayName: "Mark"
+  render: ->
+    <div className="mark" style={{top: @props.ypos-@props.hei/2, left: @props.xpos-@props.wid/2, width: @props.wid, height: @props.hei }}>
+    </div>
 
 ######################################
 
 SubjectMetadata = React.createClass
+  displayName: "Metadata"
 
   render: ->
     <div className="metadata">
       <h3>Metadata</h3>
     </div>
-
-Mark = React.createClass
-
 
 ######################################
 
