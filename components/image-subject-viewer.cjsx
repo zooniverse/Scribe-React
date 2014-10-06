@@ -54,7 +54,6 @@ SubjectContainer = React.createClass
       ).bind(this)
     return
 
-
   nextSubject: () ->
     if @state.subjects.shift() is undefined or @state.subjects.length <= 0
       @fetchSubjects()
@@ -78,7 +77,6 @@ SubjectContainer = React.createClass
 
 MarkingSurface = React.createClass
   displayName: "MarkingSurface"
-
 
   handleClick: (e) ->
     @addMark( e.nativeEvent.pageX, e.nativeEvent.pageY )
@@ -143,7 +141,7 @@ ActionButton = React.createClass
 
   render: ->
     <form onSubmit={@handleSubmit}>
-      <input type="submit" className="action-button" value={@state.label} />
+      <input type="submit" className="action-button button" value={@state.label} />
     </form>
 
 window.React = React
