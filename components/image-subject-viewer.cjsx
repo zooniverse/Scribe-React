@@ -26,35 +26,23 @@ SubjectContainer = React.createClass
 
   getInitialState: ->
     subjects: example_subjects
-    meta_data: "Blah"
 
   componentDidMount: ->
     @fetchSubjects()
 
   fetchSubjects: ->
-    @setState loading: true
     $.ajax
       url: @props.endpoint
       dataType: "json"
       success: ((data) ->
 
+        # DEBUG CODE
         console.log 'FETCHED SUBJECTS: ', subject.location for subject in data
 
-        @setState 
-          subjects        : data
-          curr_subject    : data[0]
-          subject_img_url : data[0].location
-          meta_data       : data[0].meta_data
+        @setState subjects: data, =>
+          @loadImage @state.subjects[0].location
 
-        # pre-load images
-        for subject, i in data
-          img = new Image()
-          img.src = subject.location 
-
-        console.log 'Finished Loading.'
-
-        @setState loading: false, =>
-          console.log @state.loading
+        # console.log 'Fetched Images.' # DEBUG CODE
 
         return
       ).bind(this)
@@ -64,34 +52,34 @@ SubjectContainer = React.createClass
       ).bind(this)
     return
 
-  nextSubject: () ->
+  loadImage: (url) ->    
+    # console.log 'Loading image...' # DEBUG CODE
     @setState loading: true, =>
+      img = new Image()
+      img.src = url
+      img.onload = =>
+        if @isMounted()
+          @setState url: url
+          @setState loading: false #, =>
+            # console.log @state.loading
+            # console.log "Finished Loading."
+
+  nextSubject: () ->
       if @state.subjects.shift() is undefined or @state.subjects.length <= 0
         @fetchSubjects()
         return
       else
-        @setState curr_subject: @state.subjects[0]
-        @setState subject_img_url: @state.subjects[0].location
-        @setState meta_data: @state.subjects[0].meta_data
+        @loadImage @state.subjects[0].location
 
-        img = new Image()
-        img.src = @state.subjects[0].location
-        img.onload = =>
-          if @isMounted()
-            @setState loading: false #, =>
-              # console.log @state.loading
-              # console.log "Finished Loading."
-
-
-
-      console.log 'NEXT IMAGE: ', @state.subject_img_url
+      console.log 'NEXT IMAGE: ', @state.subjects[0].location # DEBUG CODE
     
   render: ->
+    console.log 'url: ', @state.subjects[0].location
     <div className="subject-container">
-      <MarkingSurface url={@state.subject_img_url} loading={@state.loading} />
+      <MarkingSurface url={@state.subjects[0].location} loading={@state.loading} />
+      <p>{@state.subjects[0].location}</p>
       <div className="subject-ui">
-        <SubjectMetadata id={@state.subjects[0].zooniverse_id} meta_data={@state.meta_data} />
-        <ActionButton onActionSubmit={@nextSubject} />
+        <ActionButton onActionSubmit={@nextSubject} loading={@state.loading} />
       </div>
     </div>
 
@@ -111,19 +99,21 @@ SubjectMetadata = React.createClass
 ActionButton = React.createClass
   displayName: "ActionButton"
 
-  getInitialState: ->
-    label: "NEXT SUBJECT"
-    disable: true
-
   handleSubmit: (e) ->
     console.log 'ACTION'
     e.preventDefault() # prevent browser's default submit action
     @props.onActionSubmit()
 
   render: ->
-    <form onSubmit={@handleSubmit}>
-      <input type="submit" className="action-button button" value={@state.label} />
-    </form>
+    if @props.loading
+      <form onSubmit={@handleSubmit}>
+        <input type="submit" className="action-button button" value="LOADING..." disabled />
+      </form>
+
+    else
+      <form onSubmit={@handleSubmit}>
+        <input type="submit" className="action-button button" value="NEXT" />
+      </form>
 
 module.exports = ImageSubjectViewer
 window.React = React
