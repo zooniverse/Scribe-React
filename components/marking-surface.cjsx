@@ -1,3 +1,5 @@
+# @cjsx React.DOM
+
 React            = require 'react'
 $                = require '../lib/jquery-2.1.0.min.js'
 
