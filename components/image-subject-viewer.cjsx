@@ -87,8 +87,6 @@ SubjectContainer = React.createClass
       <MarkingSurface url={@state.subjects[0].location} loading={@state.loading} wid={@state.imgWid} hei={@state.imgHei} />
       
 
-
-
       <p>{@state.subjects[0].location}</p>
       <div className="subject-ui">
         <ActionButton onActionSubmit={@nextSubject} loading={@state.loading} />
