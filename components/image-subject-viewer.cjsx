@@ -60,10 +60,15 @@ SubjectContainer = React.createClass
       img.src = url
       img.onload = =>
         if @isMounted()
-          @setState url: url
-          @setState loading: false #, =>
+          @setState 
+            url: url
+            imgWid: img.width
+            imgHei: img.height
+            loading: false #, =>
             # console.log @state.loading
             # console.log "Finished Loading."
+
+          console.log "wid = #{img.width}, hei = #{img.height}"
 
   nextSubject: () ->
       if @state.subjects.shift() is undefined or @state.subjects.length <= 0
@@ -77,7 +82,7 @@ SubjectContainer = React.createClass
   render: ->
     console.log 'url: ', @state.subjects[0].location
     <div className="subject-container">
-      <MarkingSurface url={@state.subjects[0].location} loading={@state.loading} />
+      <MarkingSurface url={@state.subjects[0].location} loading={@state.loading} wid={@state.imgWid} hei={@state.imgHei} />
       <p>{@state.subjects[0].location}</p>
       <div className="subject-ui">
         <ActionButton onActionSubmit={@nextSubject} loading={@state.loading} />

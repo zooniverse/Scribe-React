@@ -22,13 +22,19 @@ MarkingSurface = React.createClass
     @forceUpdate()
 
   render: ->
+
+    console.log "wid = #{@props.wid}, hei = #{@props.hei}"
+    viewBox = [0, 0, @props.wid, @props.hei]
+
     if @props.loading
       <div className="marking-surface">
         <LoadingIndicator />
       </div> 
     else
       <div className="marking-surface">
-        <img className="subject-image" src={@props.url} onClick={@handleClick} />
+        <svg className="subject-viewer-svg" width={@props.wid} height={@props.hei} viewBox={viewBox} data-tool={@props.selectedDrawingTool?.type}>
+          <SVGImage src={@props.url} width={@props.wid} height={@props.hei} />
+        </svg>
         <MarksList mark_list={marks} />
       </div>
 
