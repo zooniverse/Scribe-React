@@ -5,7 +5,8 @@ React                         = require 'react'
 example_subjects              = require '../lib/example_subject.json'
 $                             = require '../lib/jquery-2.1.0.min.js'
 
-MarkingSurface                = require './marking-surface'
+SVGImage                      = require './svg-image'
+LoadingIndicator              = require './loading-indicator'
 SubjectMetadata               = require './subject-metadata'
 ActionButton                  = require './action-button'
 
@@ -62,13 +63,11 @@ SubjectContainer = React.createClass
         if @isMounted()
           @setState 
             url: url
-            imgWid: img.width
-            imgHei: img.height
+            imageWidth: img.width
+            imageHeight: img.height
             loading: false #, =>
             # console.log @state.loading
             # console.log "Finished Loading."
-
-          console.log "wid = #{img.width}, hei = #{img.height}"
 
   nextSubject: () ->
       if @state.subjects.shift() is undefined or @state.subjects.length <= 0
@@ -80,19 +79,37 @@ SubjectContainer = React.createClass
       console.log 'NEXT IMAGE: ', @state.subjects[0].location # DEBUG CODE
     
   render: ->
-    console.log 'url: ', @state.subjects[0].location
-    <div className="subject-container">
 
+    viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
 
-      <MarkingSurface url={@state.subjects[0].location} loading={@state.loading} wid={@state.imgWid} hei={@state.imgHei} />
-      
+    # console.log 'RENDER! =-=-=-=-=-=-=-=-=-=-=-=-'
+    # console.log 'url: ', @state.subjects[0].location
+    # console.log 'VIEWBOX: ', viewBox
 
-      <p>{@state.subjects[0].location}</p>
-      <div className="subject-ui">
-        <ActionButton onActionSubmit={@nextSubject} loading={@state.loading} />
+    if @state.loading
+      <div className="subject-container">
+        <div className="marking-surface">
+          <LoadingIndicator />
+        </div>       
+        <p>{@state.subjects[0].location}</p>
+        <div className="subject-ui">
+          <ActionButton onActionSubmit={@nextSubject} loading={@state.loading} />
+        </div>
       </div>
-    </div>
 
+    else
+      <div className="subject-container">
+        <div className="marking-surface">
+          <svg className="subject-viewer-svg" width={@state.imageWidth} height={@state.imageHeight} viewBox={viewBox} data-tool={@props.selectedDrawingTool?.type}>
+            <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
+          </svg>
+        </div>
+
+        <p>{@state.subjects[0].location}</p>
+        <div className="subject-ui">
+          <ActionButton onActionSubmit={@nextSubject} loading={@state.loading} />
+        </div>
+      </div>
 
 module.exports = ImageSubjectViewer
 window.React = React
