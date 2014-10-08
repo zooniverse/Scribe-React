@@ -6,6 +6,7 @@ example_subjects              = require '../lib/example_subject.json'
 $                             = require '../lib/jquery-2.1.0.min.js'
 
 SVGImage                      = require './svg-image'
+Draggable                     = require '../lib/draggable'
 LoadingIndicator              = require './loading-indicator'
 SubjectMetadata               = require './subject-metadata'
 ActionButton                  = require './action-button'
@@ -77,6 +78,15 @@ SubjectContainer = React.createClass
         @loadImage @state.subjects[0].location
 
       console.log 'NEXT IMAGE: ', @state.subjects[0].location # DEBUG CODE
+
+  handleInitStart: (e) ->
+    console.log 'handleInitStart()'
+
+  handleInitDrag: (e) ->
+    console.log 'handleInitDrag()'
+
+  handleInitRelease: (e) ->
+    console.log 'handleInitRelease()'
     
   render: ->
 
@@ -101,7 +111,9 @@ SubjectContainer = React.createClass
       <div className="subject-container">
         <div className="marking-surface">
           <svg className="subject-viewer-svg" width={@state.imageWidth} height={@state.imageHeight} viewBox={viewBox} data-tool={@props.selectedDrawingTool?.type}>
-            <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
+            <Draggable onStart={@handleInitStart} onDrag={@handleInitDrag} onEnd={@handleInitRelease}>
+              <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
+            </Draggable>
           </svg>
         </div>
 
