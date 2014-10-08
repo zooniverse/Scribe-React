@@ -6,7 +6,8 @@ example_subjects              = require '../lib/example_subject.json'
 $                             = require '../lib/jquery-2.1.0.min.js'
 
 MarkingSurface                = require './marking-surface'
-
+SubjectMetadata               = require './subject-metadata'
+ActionButton                  = require './action-button'
 
 ######################################
 
@@ -83,37 +84,6 @@ SubjectContainer = React.createClass
       </div>
     </div>
 
-
-######################################
-
-SubjectMetadata = React.createClass
-  displayName: "Metadata"
-
-  render: ->
-    <div className="metadata">
-      <h3>Metadata</h3>
-    </div>
-
-######################################
-
-ActionButton = React.createClass
-  displayName: "ActionButton"
-
-  handleSubmit: (e) ->
-    console.log 'ACTION'
-    e.preventDefault() # prevent browser's default submit action
-    @props.onActionSubmit()
-
-  render: ->
-    if @props.loading
-      <form onSubmit={@handleSubmit}>
-        <input type="submit" className="action-button button" value="LOADING..." disabled />
-      </form>
-
-    else
-      <form onSubmit={@handleSubmit}>
-        <input type="submit" className="action-button button" value="NEXT" />
-      </form>
 
 module.exports = ImageSubjectViewer
 window.React = React

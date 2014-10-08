@@ -1,10 +1,10 @@
 React            = require 'react'
 $                = require '../lib/jquery-2.1.0.min.js'
 
+SVGImage         = require './svg-image'
 LoadingIndicator = require './loading-indicator'
 
 marks = []
-
 
 MarkingSurface = React.createClass
   displayName: "MarkingSurface"
