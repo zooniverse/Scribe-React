@@ -13,22 +13,36 @@ ActionButton                  = require './action-button'
 
 ######################################
 
+annotations = []
+
 ImageSubjectViewer = React.createClass
   displayName: 'ImageSubjectViewer'
 
   render: ->
     endpoint = "http://localhost:3000/workflows/533cd4dd4954738018030000/subjects.json?limit=5"
     <div className="image-subject-viewer">
-      <SubjectContainer ref='subject_container' endpoint=endpoint />
+      <SubjectViewer ref='subject_container' endpoint=endpoint />
     </div>
 
-######################################
 
-SubjectContainer = React.createClass
-  displayName: 'SubjectContainer'
+SubjectViewer = React.createClass
+  displayName: 'SubjectViewer'
 
   getInitialState: ->
-    subjects: example_subjects
+    subjects: example_subjects # TODO: need to remove this
+
+    loading: false
+
+    frame: 0
+    imageWidth: 0
+    imageHeight: 0
+
+    viewX: 0
+    viewY: 0
+    viewWidth: 0
+    viewHeight: 0
+
+    selectedMark: null # TODO: currently not in use
 
   componentDidMount: ->
     @fetchSubjects()
@@ -70,6 +84,7 @@ SubjectContainer = React.createClass
             # console.log @state.loading
             # console.log "Finished Loading."
 
+
   nextSubject: () ->
       if @state.subjects.shift() is undefined or @state.subjects.length <= 0
         @fetchSubjects()
@@ -77,16 +92,70 @@ SubjectContainer = React.createClass
       else
         @loadImage @state.subjects[0].location
 
-      console.log 'NEXT IMAGE: ', @state.subjects[0].location # DEBUG CODE
+      console.log 'NEXT IMAGE: ', @state.subject1s[0].location # DEBUG CODE
 
   handleInitStart: (e) ->
     console.log 'handleInitStart()'
+
+    mouseCoords = @getEventOffset e
+    annotation = annotations[annotations.length - 1]
+    annotation.marks ?= []
+    mark = annotation.marks[annotation.marks.length - 1]
+    MarkComponent = drawingComponents[@props.selectedDrawingTool.type]
+
+    if MarkComponent.isComplete?
+      incomplete = not MarkComponent.isComplete? mark
+
+    unless incomplete
+      mark =
+        _id: Math.random()
+        _tool: @props.selectedDrawingTool
+        _releases: 0
+
+      if MarkComponent.defaultValues?
+        defaultValues = MarkComponent.defaultValues mouseCoords
+        for key, value of defaultValues
+          mark[key] = value
+
+
+    # TODO: I don't entirely trust that the action always fires immediately.
+    # There should probably be a one-time listener here on the classification.
+
+    @setState selectedMark: annotation.marks[annotation.marks.length - 1], =>
+      mark = @state.selectedMark
+      if MarkComponent.initStart?
+        initProps = MarkComponent.initStart mouseCoords, e
+
 
   handleInitDrag: (e) ->
     console.log 'handleInitDrag()'
 
   handleInitRelease: (e) ->
     console.log 'handleInitRelease()'
+
+
+  setView: (viewX, viewY, viewWidth, viewHeight) ->
+    @setState {viewX, viewY, viewWidth, viewHeight}
+
+  getScale: ->
+    rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
+    rect ?= width: 0, height: 0
+    horizontal: rect.width / @state.viewWidth
+    vertical: rect.height / @state.viewHeight
+
+  getEventOffset: (e) ->
+    rect = @refs.sizeRect.getDOMNode().getBoundingClientRect()
+    {horizontal, vertical} = @getScale()
+    x: ((e.pageX - pageXOffset - rect.left) / horizontal) + @state.viewX
+    y: ((e.pageY - pageYOffset - rect.top) / vertical) + @state.viewY
+
+  selectMark: (mark) ->
+    annotation = annotations[annotations.length - 1]
+    index = annotation.marks?.indexOf mark
+    if index? and index isnt -1
+      annotation.marks.splice index, 1
+      annotation.marks.push mark
+      @setState selectedMark: mark
     
   render: ->
 
@@ -111,6 +180,7 @@ SubjectContainer = React.createClass
       <div className="subject-container">
         <div className="marking-surface">
           <svg className="subject-viewer-svg" width={@state.imageWidth} height={@state.imageHeight} viewBox={viewBox} data-tool={@props.selectedDrawingTool?.type}>
+            <rect ref="sizeRect" width={@state.imageWidth} height={@state.imageHeight} />
             <Draggable onStart={@handleInitStart} onDrag={@handleInitDrag} onEnd={@handleInitRelease}>
               <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
             </Draggable>
@@ -125,3 +195,4 @@ SubjectContainer = React.createClass
 
 module.exports = ImageSubjectViewer
 window.React = React
+window.foo = ImageSubjectViewer
