@@ -6,7 +6,10 @@ module.exports = React.createClass
   displayName: 'DeleteButton'
 
   render: ->
-    radius = 10
+    fillColor = '#26baff'
+    strokeColor = '#000'
+    strokeWidth = 3
+    radius = 20
 
     cross = "
       M #{-1 * radius * 0.6 } 0
@@ -15,7 +18,7 @@ module.exports = React.createClass
       L 0 #{radius * 0.6 }
     "
 
-    @transferPropsTo <g className="clickable drawing-tool-delete-button" stroke="white" strokeWidth="2" onClick={@props.onClick}>
-      <circle r={radius} fill="black" />
+    @transferPropsTo <g className="clickable drawing-tool-delete-button" stroke={strokeColor} strokeWidth={strokeWidth} onClick={@props.onClick}>
+      <circle r={radius} fill={fillColor} />
       <path d={cross} transform="rotate(45)" />
     </g>

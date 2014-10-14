@@ -202,8 +202,8 @@ SubjectViewer = React.createClass
 
       tools.push new PointTool
         mark: mark
-        disabled: false
-        selected: true
+        # disabled: false
+        # selected: true
         getEventOffset: @getEventOffset
 
 

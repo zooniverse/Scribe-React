@@ -19,16 +19,19 @@ module.exports = React.createClass
       {x, y}
 
   render: ->
-    color = 'rgba(200,30,90)' #@props.mark._tool.color ? 'currentcolor'
+    
+    fillColor   = 'rgba(0,0,0,0.5)'
+    strokeColor = '#fff'
+    radius = 40
 
-    radius = if @props.disabled
-      4
-    else if @props.selected
-      12
-    else
-      6
+    # radius = if @props.disabled
+    #   4
+    # else if @props.selected
+    #   12
+    # else
+    #   6
 
-    strokeWidth = 3
+    strokeWidth = 5
 
     console.log "RENDERING (#{@props.mark.x},#{@props.mark.y})"
 
@@ -45,16 +48,18 @@ module.exports = React.createClass
     <g className="point drawing-tool" transform={transform} data-disabled={@props.disabled || null} data-selected={@props.selected || null}>
       <Draggable onStart={@props.select} onDrag={@handleDrag}>
         <g strokeWidth={strokeWidth}>
-          <circle cy="2" r={radius + (strokeWidth / 4)} stroke="black" strokeWidth={strokeWidth * 1.5} opacity="0.3" />
-          <circle r={radius + (strokeWidth / 2)} stroke="white" />
-          <circle r={radius} fill={if @props.disabled then color else 'transparent'} stroke={color} />
+          <circle r={radius + (strokeWidth / 2)} stroke={strokeColor} fill={fillColor} />
         </g>
       </Draggable>
+      <DeleteButton transform="translate(#{radius}, #{-1 * radius})" onClick={@deleteMark} />
+
     </g>
 
 
-  # handleDrag: (e) ->
+  handleDrag: (e) ->
+    console.log 'handleDrag()'
   #   dispatch 'classification:annotation:mark:update', @props.mark, @props.getEventOffset e
 
-  # deleteMark: ->
+  deleteMark: ->
+    console.log 'deleteMark()'
   #   dispatch 'classification:annotation:mark:delete', @props.mark
