@@ -11,11 +11,14 @@ LoadingIndicator              = require './loading-indicator'
 SubjectMetadata               = require './subject-metadata'
 ActionButton                  = require './action-button'
 
+PointTool                     = require './point'
+
 ######################################
 
 annotations = []
+marks = []
 
-ImageSubjectViewer = React.createClass
+ImageSubjectViewer = React.createClass # rename to Classifier
   displayName: 'ImageSubjectViewer'
 
   render: ->
@@ -45,6 +48,7 @@ SubjectViewer = React.createClass
     selectedMark: null # TODO: currently not in use
 
   componentDidMount: ->
+    @setView 0, 0, @state.imageWidth, @state.imageHeight
     @fetchSubjects()
 
   fetchSubjects: ->
@@ -54,7 +58,7 @@ SubjectViewer = React.createClass
       success: ((data) ->
 
         # DEBUG CODE
-        console.log 'FETCHED SUBJECTS: ', subject.location for subject in data
+        # console.log 'FETCHED SUBJECTS: ', subject.location for subject in data
 
         @setState subjects: data, =>
           @loadImage @state.subjects[0].location
@@ -97,34 +101,54 @@ SubjectViewer = React.createClass
   handleInitStart: (e) ->
     console.log 'handleInitStart()'
 
-    mouseCoords = @getEventOffset e
-    annotation = annotations[annotations.length - 1]
-    annotation.marks ?= []
-    mark = annotation.marks[annotation.marks.length - 1]
-    MarkComponent = drawingComponents[@props.selectedDrawingTool.type]
+    {horizontal, vertical} = @getScale()
 
-    if MarkComponent.isComplete?
-      incomplete = not MarkComponent.isComplete? mark
+    rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
+    {x, y} = @getEventOffset e
 
-    unless incomplete
-      mark =
-        _id: Math.random()
-        _tool: @props.selectedDrawingTool
-        _releases: 0
+    marks.push {x, y}
 
-      if MarkComponent.defaultValues?
-        defaultValues = MarkComponent.defaultValues mouseCoords
-        for key, value of defaultValues
-          mark[key] = value
+    console.log 'marks.length: ', marks.length
+    
+    console.log "CLICKED (#{x},#{y})"
 
 
-    # TODO: I don't entirely trust that the action always fires immediately.
-    # There should probably be a one-time listener here on the classification.
 
-    @setState selectedMark: annotation.marks[annotation.marks.length - 1], =>
-      mark = @state.selectedMark
-      if MarkComponent.initStart?
-        initProps = MarkComponent.initStart mouseCoords, e
+    # CREATE NEW ANNOTATION
+
+    @forceUpdate()
+
+    # console.log "BLAH : (#{e.pageX - e.pageXOffset},#{e.pageY-e.pageYOffset})"
+
+
+
+    # annotation = annotations[annotations.length - 1]
+    # annotation.marks ?= []
+    # mark = annotation.marks[annotation.marks.length - 1]
+    # MarkComponent = drawingComponents[@props.selectedDrawingTool.type]
+
+    # if MarkComponent.isComplete?
+    #   incomplete = not MarkComponent.isComplete? mark
+
+    # unless incomplete
+    #   mark =
+    #     _id: Math.random()
+    #     _tool: @props.selectedDrawingTool
+    #     _releases: 0
+
+    #   if MarkComponent.defaultValues?
+    #     defaultValues = MarkComponent.defaultValues mouseCoords
+    #     for key, value of defaultValues
+    #       mark[key] = value
+
+
+    # # TODO: I don't entirely trust that the action always fires immediately.
+    # # There should probably be a one-time listener here on the classification.
+
+    # @setState selectedMark: annotation.marks[annotation.marks.length - 1], =>
+    #   mark = @state.selectedMark
+    #   if MarkComponent.initStart?
+    #     initProps = MarkComponent.initStart mouseCoords, e
 
 
   handleInitDrag: (e) ->
@@ -145,9 +169,19 @@ SubjectViewer = React.createClass
 
   getEventOffset: (e) ->
     rect = @refs.sizeRect.getDOMNode().getBoundingClientRect()
-    {horizontal, vertical} = @getScale()
-    x: ((e.pageX - pageXOffset - rect.left) / horizontal) + @state.viewX
-    y: ((e.pageY - pageYOffset - rect.top) / vertical) + @state.viewY
+    
+    # console.log 'RECT: ', rect
+    # {horizontal, vertical} = @getScale()
+    # x: ((e.pageX - pageXOffset - rect.left) / horizontal) + @state.viewX
+    # y: ((e.pageY - pageYOffset - rect.top) / vertical) + @state.viewY
+
+    x: ((e.pageX - pageXOffset - rect.left)) + @state.viewX
+    y: ((e.pageY - pageYOffset - rect.top)) + @state.viewY
+
+
+  handleToolMouseDown: ->
+    console.log 'handleToolMouseDown()'
+
 
   selectMark: (mark) ->
     annotation = annotations[annotations.length - 1]
@@ -158,17 +192,38 @@ SubjectViewer = React.createClass
       @setState selectedMark: mark
     
   render: ->
+    tools = []
+
+    console.log 'render()'
+    console.log 'MARKS: ', marks
+
+    for mark in [ marks... ]
+      console.log 'mark: ', mark
+
+      tools.push new PointTool
+        mark: mark
+        disabled: false
+        selected: true
+        getEventOffset: @getEventOffset
+
+
 
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
+    # viewBox = [@state.viewX, @state.viewY, @state.viewWidth, @state.viewHeight]
+
 
     # console.log 'RENDER! =-=-=-=-=-=-=-=-=-=-=-=-'
     # console.log 'url: ', @state.subjects[0].location
     # console.log 'VIEWBOX: ', viewBox
 
+    # @getEventOffset()
+    # viewBox = [@state.viewX, @state.viewY, @state.viewWidth, @state.viewHeight]
+
+
     if @state.loading
       <div className="subject-container">
         <div className="marking-surface">
-          <LoadingIndicator />
+          <LoadingIndicator/>
         </div>       
         <p>{@state.subjects[0].location}</p>
         <div className="subject-ui">
@@ -184,6 +239,7 @@ SubjectViewer = React.createClass
             <Draggable onStart={@handleInitStart} onDrag={@handleInitDrag} onEnd={@handleInitRelease}>
               <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
             </Draggable>
+            <g className="subject-viewer-tools" onMouseDown={@handleToolMouseDown}>{tools}</g>
           </svg>
         </div>
 
@@ -195,4 +251,3 @@ SubjectViewer = React.createClass
 
 module.exports = ImageSubjectViewer
 window.React = React
-window.foo = ImageSubjectViewer

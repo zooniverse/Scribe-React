@@ -23,6 +23,7 @@ module.exports = React.createClass
       onMouseDown: @handleStart
 
   handleStart: (e) ->
+    # console.log 'DRAGGABLE: handleStart()'
     e.preventDefault()
     document.addEventListener 'mousemove', @handleDrag
     document.addEventListener 'mouseup', @handleEnd
@@ -36,9 +37,11 @@ module.exports = React.createClass
     document.body.classList.add 'dragging'
 
   handleDrag: (e) ->
+    # console.log 'DRAGGABLE: handleDrag()'
     @props.onDrag? e
 
   handleEnd: (e) ->
+    # console.log 'DRAGGABLE: handleEnd()'
     document.removeEventListener 'mousemove', @handleDrag
     document.removeEventListener 'mouseup', @handleEnd
 
