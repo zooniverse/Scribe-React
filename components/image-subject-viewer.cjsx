@@ -190,18 +190,19 @@ SubjectViewer = React.createClass
       annotation.marks.splice index, 1
       annotation.marks.push mark
       @setState selectedMark: mark
-    
+
   render: ->
     tools = []
 
     console.log 'render()'
     console.log 'MARKS: ', marks
 
-    for mark in [ marks... ]
+    for mark, key in [ marks... ]
       console.log 'mark: ', mark
 
       tools.push new PointTool
         mark: mark
+        key: key
         # disabled: false
         # selected: true
         getEventOffset: @getEventOffset
@@ -235,11 +236,17 @@ SubjectViewer = React.createClass
       <div className="subject-container">
         <div className="marking-surface">
           <svg className="subject-viewer-svg" width={@state.imageWidth} height={@state.imageHeight} viewBox={viewBox} data-tool={@props.selectedDrawingTool?.type}>
+            
             <rect ref="sizeRect" width={@state.imageWidth} height={@state.imageHeight} />
+            
             <Draggable onStart={@handleInitStart} onDrag={@handleInitDrag} onEnd={@handleInitRelease}>
               <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
             </Draggable>
-            <g className="subject-viewer-tools" width={@state.imageWidth} height={@state.imageHeight} onMouseDown={@handleToolMouseDown}>{tools}</g>
+            
+            <g className="subject-viewer-tools" width={@state.imageWidth} height={@state.imageHeight} onMouseDown={@handleToolMouseDown}>
+              {tools}
+            </g>
+
           </svg>
         </div>
 

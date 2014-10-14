@@ -61,17 +61,15 @@ module.exports = React.createClass
           <circle r={radius + (strokeWidth / 2)} stroke={strokeColor} fill={fillColor} />
         </g>
       </Draggable>
-      <DeleteButton transform="translate(#{radius}, #{-1 * radius})" onClick={@deleteMark} />
-
+      <DeleteButton transform="translate(#{radius}, #{-radius})" onClick={@deleteMark} />
     </g>
-
 
   handleDrag: (e) ->
     console.log 'handleDrag()'
-    console.log 'getEventOffset ', @props.getEventOffset(e)
     @updateMark e
   #   dispatch 'classification:annotation:mark:update', @props.mark, @props.getEventOffset e
 
-  deleteMark: ->
-    console.log 'deleteMark()'
+  deleteMark: (e) ->
+    console.log 'deleteMark() PASRENT: ', e.target.parent
+    console.log 'e: ', e.target.parentNode.parentElement.remove()
   #   dispatch 'classification:annotation:mark:delete', @props.mark
