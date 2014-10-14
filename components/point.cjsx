@@ -18,6 +18,16 @@ module.exports = React.createClass
     initMove: ({x, y}) ->
       {x, y}
 
+  getInitialState: ->
+    x: @props.mark.x
+    y: @props.mark.y
+
+  updateMark: (e) ->
+    console.log 'updateMark() ', e
+    @setState
+      x: e.x
+      y: e.y
+
   render: ->
     
     fillColor   = 'rgba(0,0,0,0.5)'
@@ -36,7 +46,7 @@ module.exports = React.createClass
     console.log "RENDERING (#{@props.mark.x},#{@props.mark.y})"
 
     transform = "
-      translate(#{@props.mark.x}, #{@props.mark.y})
+      translate(#{@state.x}, #{@state.y})
       scale(#{1}, #{1})
     "
 
@@ -58,6 +68,8 @@ module.exports = React.createClass
 
   handleDrag: (e) ->
     console.log 'handleDrag()'
+    console.log 'getEventOffset ', @props.getEventOffset(e)
+    @updateMark e
   #   dispatch 'classification:annotation:mark:update', @props.mark, @props.getEventOffset e
 
   deleteMark: ->

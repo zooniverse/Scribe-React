@@ -239,7 +239,7 @@ SubjectViewer = React.createClass
             <Draggable onStart={@handleInitStart} onDrag={@handleInitDrag} onEnd={@handleInitRelease}>
               <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
             </Draggable>
-            <g className="subject-viewer-tools" onMouseDown={@handleToolMouseDown}>{tools}</g>
+            <g className="subject-viewer-tools" width={@state.imageWidth} height={@state.imageHeight} onMouseDown={@handleToolMouseDown}>{tools}</g>
           </svg>
         </div>
 
