@@ -22,11 +22,9 @@ module.exports = React.createClass
     x: @props.mark.x
     y: @props.mark.y
 
-  updateMark: (e) ->
-    console.log 'updateMark() ', e
-    @setState
-      x: e.x
-      y: e.y
+  updateMark: ({x,y}) ->
+    # console.log 'updateMark() ', e
+    @setState {x,y}
 
   render: ->
     
@@ -42,8 +40,6 @@ module.exports = React.createClass
     #   6
 
     strokeWidth = 5
-
-    console.log "RENDERING (#{@props.mark.x},#{@props.mark.y})"
 
     transform = "
       translate(#{@state.x}, #{@state.y})
@@ -65,11 +61,8 @@ module.exports = React.createClass
     </g>
 
   handleDrag: (e) ->
-    console.log 'handleDrag()'
-    @updateMark e
+    @updateMark @props.getEventOffset(e)
   #   dispatch 'classification:annotation:mark:update', @props.mark, @props.getEventOffset e
 
   deleteMark: (e) ->
-    console.log 'deleteMark() PASRENT: ', e.target.parent
-    console.log 'e: ', e.target.parentNode.parentElement.remove()
   #   dispatch 'classification:annotation:mark:delete', @props.mark

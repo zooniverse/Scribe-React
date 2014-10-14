@@ -208,7 +208,7 @@ SubjectViewer = React.createClass
         getEventOffset: @getEventOffset
 
 
-
+    foo = "BAR"
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
     # viewBox = [@state.viewX, @state.viewY, @state.viewWidth, @state.viewHeight]
 
@@ -243,7 +243,7 @@ SubjectViewer = React.createClass
               <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
             </Draggable>
             
-            <g className="subject-viewer-tools" width={@state.imageWidth} height={@state.imageHeight} onMouseDown={@handleToolMouseDown}>
+            <g className="subject-viewer-tools" foo={foo} onMouseDown={@handleToolMouseDown}>
               {tools}
             </g>
 
