@@ -191,6 +191,9 @@ SubjectViewer = React.createClass
       annotation.marks.push mark
       @setState selectedMark: mark
 
+  onClickDelete: (e) ->
+    console.log "dleeeet"
+
   render: ->
     tools = []
 
@@ -206,7 +209,11 @@ SubjectViewer = React.createClass
         # disabled: false
         # selected: true
         getEventOffset: @getEventOffset
+        onClickDelete: @onClickDelete
 
+
+    console.log "TOOLS: ", tools[0]
+    
 
     foo = "BAR"
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]

@@ -32,6 +32,8 @@ module.exports = React.createClass
     strokeColor = '#fff'
     radius = 40
 
+    console.log 'PROPS: ', @props
+
     # radius = if @props.disabled
     #   4
     # else if @props.selected
@@ -57,14 +59,9 @@ module.exports = React.createClass
           <circle r={radius + (strokeWidth / 2)} stroke={strokeColor} fill={fillColor} />
         </g>
       </Draggable>
-      <DeleteButton transform="translate(#{radius}, #{-radius})" onClick={@deleteMark} />
+      <DeleteButton transform="translate(#{radius}, #{-radius})" onClick={@props.onClickDelete} />
     </g>
 
   handleDrag: (e) ->
     @updateMark @props.getEventOffset(e)
   #   dispatch 'classification:annotation:mark:update', @props.mark, @props.getEventOffset e
-
-  deleteMark: (e) ->
-    console.log 'DELETE MARK'
-    
-  #   dispatch 'classification:annotation:mark:delete', @props.mark
