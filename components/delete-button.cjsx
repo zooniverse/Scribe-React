@@ -8,13 +8,13 @@ module.exports = React.createClass
   render: ->
     fillColor = '#26baff'
     strokeColor = '#000'
-    strokeWidth = 3
-    radius = 20
+    strokeWidth = 2
+    radius = 10
 
     cross = "
-      M #{-1 * radius * 0.6 } 0
-      L #{radius * 0.6 } 0
-      M 0 #{-1 * radius * 0.6 }
+      M #{-radius * 0.6 } 0
+      L #{ radius * 0.6 } 0
+      M 0 #{-radius * 0.6 }
       L 0 #{radius * 0.6 }
     "
 

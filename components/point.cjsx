@@ -39,7 +39,7 @@ module.exports = React.createClass
     # else
     #   6
 
-    strokeWidth = 5
+    strokeWidth = 3
 
     transform = "
       translate(#{@state.x}, #{@state.y})
@@ -65,4 +65,5 @@ module.exports = React.createClass
   #   dispatch 'classification:annotation:mark:update', @props.mark, @props.getEventOffset e
 
   deleteMark: (e) ->
+    console.log 'DELETE MARK'
   #   dispatch 'classification:annotation:mark:delete', @props.mark
