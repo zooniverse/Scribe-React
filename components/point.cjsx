@@ -3,7 +3,6 @@
 React = require 'react'
 Draggable = require '../lib/draggable'
 DeleteButton = require './delete-button'
-# {dispatch} = require '../../lib/dispatcher'
 
 module.exports = React.createClass
   displayName: 'PointTool'
@@ -64,4 +63,3 @@ module.exports = React.createClass
 
   handleDrag: (e) ->
     @updateMark @props.getEventOffset(e)
-  #   dispatch 'classification:annotation:mark:update', @props.mark, @props.getEventOffset e

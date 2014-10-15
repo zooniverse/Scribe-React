@@ -4,16 +4,12 @@ React                         = require 'react'
 {Router, Routes, Route, Link} = require 'react-router'
 example_subjects              = require '../lib/example_subject.json'
 $                             = require '../lib/jquery-2.1.0.min.js'
-
 SVGImage                      = require './svg-image'
 Draggable                     = require '../lib/draggable'
 LoadingIndicator              = require './loading-indicator'
 SubjectMetadata               = require './subject-metadata'
 ActionButton                  = require './action-button'
-
 PointTool                     = require './point'
-
-######################################
 
 annotations = []
 marks = []
@@ -26,7 +22,6 @@ ImageSubjectViewer = React.createClass # rename to Classifier
     <div className="image-subject-viewer">
       <SubjectViewer endpoint=endpoint />
     </div>
-
 
 SubjectViewer = React.createClass
   displayName: 'SubjectViewer'
@@ -88,75 +83,27 @@ SubjectViewer = React.createClass
             # console.log @state.loading
             # console.log "Finished Loading."
 
-
   nextSubject: () ->
       if @state.subjects.shift() is undefined or @state.subjects.length <= 0
         @fetchSubjects()
         return
       else
         @loadImage @state.subjects[0].location
-
       console.log 'NEXT IMAGE: ', @state.subject1s[0].location # DEBUG CODE
 
   handleInitStart: (e) ->
     console.log 'handleInitStart()'
-
     {horizontal, vertical} = @getScale()
-
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
     {x, y} = @getEventOffset e
-
     marks.push {x, y}
-
-    console.log 'marks.length: ', marks.length
-    
-    console.log "CLICKED (#{x},#{y})"
-
-
-
-    # CREATE NEW ANNOTATION
-
     @forceUpdate()
-
-    # console.log "BLAH : (#{e.pageX - e.pageXOffset},#{e.pageY-e.pageYOffset})"
-
-
-
-    # annotation = annotations[annotations.length - 1]
-    # annotation.marks ?= []
-    # mark = annotation.marks[annotation.marks.length - 1]
-    # MarkComponent = drawingComponents[@props.selectedDrawingTool.type]
-
-    # if MarkComponent.isComplete?
-    #   incomplete = not MarkComponent.isComplete? mark
-
-    # unless incomplete
-    #   mark =
-    #     _id: Math.random()
-    #     _tool: @props.selectedDrawingTool
-    #     _releases: 0
-
-    #   if MarkComponent.defaultValues?
-    #     defaultValues = MarkComponent.defaultValues mouseCoords
-    #     for key, value of defaultValues
-    #       mark[key] = value
-
-
-    # # TODO: I don't entirely trust that the action always fires immediately.
-    # # There should probably be a one-time listener here on the classification.
-
-    # @setState selectedMark: annotation.marks[annotation.marks.length - 1], =>
-    #   mark = @state.selectedMark
-    #   if MarkComponent.initStart?
-    #     initProps = MarkComponent.initStart mouseCoords, e
-
 
   handleInitDrag: (e) ->
     console.log 'handleInitDrag()'
 
   handleInitRelease: (e) ->
     console.log 'handleInitRelease()'
-
 
   setView: (viewX, viewY, viewWidth, viewHeight) ->
     @setState {viewX, viewY, viewWidth, viewHeight}
@@ -178,10 +125,8 @@ SubjectViewer = React.createClass
     x: ((e.pageX - pageXOffset - rect.left)) + @state.viewX
     y: ((e.pageY - pageYOffset - rect.top)) + @state.viewY
 
-
   handleToolMouseDown: ->
     console.log 'handleToolMouseDown()'
-
 
   selectMark: (mark) ->
     annotation = annotations[annotations.length - 1]
@@ -197,11 +142,7 @@ SubjectViewer = React.createClass
   render: ->
     tools = []
 
-    console.log 'render()'
-    console.log 'MARKS: ', marks
-
     for mark, key in [ marks... ]
-      console.log 'mark: ', mark
 
       tools.push new PointTool
         mark: mark
@@ -209,24 +150,9 @@ SubjectViewer = React.createClass
         # disabled: false
         # selected: true
         getEventOffset: @getEventOffset
-        onClickDelete: @onClickDelete
+        onClickDelete: @onClickDelete    
 
-
-    console.log "TOOLS: ", tools[0]
-    
-
-    foo = "BAR"
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
-    # viewBox = [@state.viewX, @state.viewY, @state.viewWidth, @state.viewHeight]
-
-
-    # console.log 'RENDER! =-=-=-=-=-=-=-=-=-=-=-=-'
-    # console.log 'url: ', @state.subjects[0].location
-    # console.log 'VIEWBOX: ', viewBox
-
-    # @getEventOffset()
-    # viewBox = [@state.viewX, @state.viewY, @state.viewWidth, @state.viewHeight]
-
 
     if @state.loading
       <div className="subject-container">
@@ -249,14 +175,11 @@ SubjectViewer = React.createClass
             <Draggable onStart={@handleInitStart} onDrag={@handleInitDrag} onEnd={@handleInitRelease}>
               <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
             </Draggable>
-            
-            <g className="subject-viewer-tools" foo={foo} onMouseDown={@handleToolMouseDown}>
+            <g className="subject-viewer-tools" onMouseDown={@handleToolMouseDown}>
               {tools}
             </g>
-
           </svg>
         </div>
-
         <p>{@state.subjects[0].location}</p>
         <div className="subject-ui">
           <ActionButton onActionSubmit={@nextSubject} loading={@state.loading} />
