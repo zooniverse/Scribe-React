@@ -24,7 +24,7 @@ ImageSubjectViewer = React.createClass # rename to Classifier
   render: ->
     endpoint = "http://localhost:3000/workflows/533cd4dd4954738018030000/subjects.json?limit=5"
     <div className="image-subject-viewer">
-      <SubjectViewer ref='subject_container' endpoint=endpoint />
+      <SubjectViewer endpoint=endpoint />
     </div>
 
 

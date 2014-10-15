@@ -66,4 +66,5 @@ module.exports = React.createClass
 
   deleteMark: (e) ->
     console.log 'DELETE MARK'
+    
   #   dispatch 'classification:annotation:mark:delete', @props.mark
