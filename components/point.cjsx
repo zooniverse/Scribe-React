@@ -20,46 +20,59 @@ module.exports = React.createClass
   getInitialState: ->
     x: @props.mark.x
     y: @props.mark.y
+    markWidth: 100
+    radius: 40
+    fillColor: 'rgba(0,0,0,0.5)'
+    strokeColor: '#fff'
+    strokeWidth: 3
 
   updateMark: ({x,y}) ->
     # console.log 'updateMark() ', e
     @setState {x,y}
 
+  handleMouseOver: ->
+    console.log 'onMouseOver()'
+    @setState 
+      strokeColor: '#fff'
+      fillColor: 'rgba(0,0,0,0.25)'
+
+  handleMouseOut: ->
+    console.log 'onMouseOut()'
+    @setState 
+      strokeColor: 'rgba(255,255,255,0.75)'
+      fillColor: 'rgba(0,0,0,0.5)'
+
+  handleDrag: (e) ->
+    @updateMark @props.getEventOffset(e)
+  
   render: ->
-    
-    fillColor   = 'rgba(0,0,0,0.5)'
-    strokeColor = '#fff'
-    radius = 40
-
-    console.log 'PROPS: ', @props
-
-    # radius = if @props.disabled
-    #   4
-    # else if @props.selected
-    #   12
-    # else
-    #   6
-
-    strokeWidth = 3
-
+    console.log 'IMAGE WIDTH: ', @props.imageWidth
     transform = "
       translate(#{@state.x}, #{@state.y})
       scale(#{1}, #{1})
     "
 
-    # transform = "
-    #   translate(#{@props.mark.x}, #{@props.mark.y})
-    #   scale(#{1 / @props.scale.horizontal}, #{1 / @props.scale.vertical})
-    # "
+    if @props.selected
+      deleteButton = 
+        <DeleteButton 
+          transform="translate(25, #{@state.markWidth/2})" 
+          onClick={@props.onClickDelete} />
+    else
+      deleteButton = null
 
-    <g className="point drawing-tool" transform={transform} data-disabled={@props.disabled || null} data-selected={@props.selected || null}>
+    <g className="point drawing-tool" transform={"translate(0, #{@state.y-@state.markWidth/2})"} data-disabled={@props.disabled || null} data-selected={@props.selected || null}>
       <Draggable onStart={@props.select} onDrag={@handleDrag}>
-        <g strokeWidth={strokeWidth}>
-          <circle r={radius + (strokeWidth / 2)} stroke={strokeColor} fill={fillColor} />
-        </g>
+        <rect 
+          x = 0
+          y = 0
+          viewBox = {"0 0 @props.imageWidth @props.imageHeight"}
+          width = {@props.imageWidth}
+          height = {"100"}
+          fill = {"rgba(0,0,0,0.5)"}
+          stroke = {@state.strokeColor}
+          strokeWidth = {@state.strokeWidth}
+        />
       </Draggable>
-      <DeleteButton transform="translate(#{radius}, #{-radius})" onClick={@props.onClickDelete} />
+      {deleteButton}
     </g>
-
-  handleDrag: (e) ->
-    @updateMark @props.getEventOffset(e)
+  

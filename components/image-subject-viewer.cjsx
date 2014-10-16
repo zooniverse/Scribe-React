@@ -97,6 +97,8 @@ SubjectViewer = React.createClass
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
     {x, y} = @getEventOffset e
     marks.push {x, y}
+    @selectMark marks[length-1]
+
     @forceUpdate()
 
   handleInitDrag: (e) ->
@@ -129,28 +131,36 @@ SubjectViewer = React.createClass
     console.log 'handleToolMouseDown()'
 
   selectMark: (mark) ->
-    annotation = annotations[annotations.length - 1]
-    index = annotation.marks?.indexOf mark
-    if index? and index isnt -1
-      annotation.marks.splice index, 1
-      annotation.marks.push mark
-      @setState selectedMark: mark
+    console.log 'selectMark()'
+    @setState selectedMark: mark
 
-  onClickDelete: (e) ->
-    console.log "dleeeet"
+    @forceUpdate()
+
+    # index = marks?.indexOf mark
+    # if index? and index isnt -1
+    #   marks.splice index, 1
+    #   marks.push mark
+    #   @setState selectedMark: mark
+
+  onClickDelete: (e, key) ->
+    console.log "dleeeet: ", e.target
 
   render: ->
+    console.log 'SELECTED MARK: ', @state.selectedMark
+
     tools = []
 
     for mark, key in [ marks... ]
-
       tools.push new PointTool
         mark: mark
         key: key
-        # disabled: false
-        # selected: true
+        disabled: false
+        selected: mark is @state.selectedMark
+        select: @selectMark.bind null, mark
         getEventOffset: @getEventOffset
-        onClickDelete: @onClickDelete    
+        onClickDelete: @onClickDelete  
+        imageWidth: @state.imageWidth
+        imageHeight: @state.imageHeight
 
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
 
@@ -169,9 +179,7 @@ SubjectViewer = React.createClass
       <div className="subject-container">
         <div className="marking-surface">
           <svg className="subject-viewer-svg" width={@state.imageWidth} height={@state.imageHeight} viewBox={viewBox} data-tool={@props.selectedDrawingTool?.type}>
-            
             <rect ref="sizeRect" width={@state.imageWidth} height={@state.imageHeight} />
-            
             <Draggable onStart={@handleInitStart} onDrag={@handleInitDrag} onEnd={@handleInitRelease}>
               <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
             </Draggable>
