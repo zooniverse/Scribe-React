@@ -3,6 +3,7 @@
 React = require 'react'
 Draggable = require '../lib/draggable'
 DeleteButton = require './delete-button'
+ResizeButton = require './resize-button'
 
 module.exports = React.createClass
   displayName: 'PointTool'
@@ -51,6 +52,19 @@ module.exports = React.createClass
       translate(#{@state.x}, #{@state.y})
       scale(#{1}, #{1})
     "
+    topResizeButton = 
+      <Draggable>
+        <ResizeButton 
+          transform="translate(#{@props.imageWidth/2}, 0)" 
+        />
+      </Draggable>
+
+    bottomResizeButton =       
+      <Draggable>
+        <ResizeButton 
+          transform="translate(#{@props.imageWidth/2}, #{@state.markWidth})" 
+        />
+      </Draggable>
 
     if @props.selected
       deleteButton = 
@@ -73,6 +87,8 @@ module.exports = React.createClass
           strokeWidth = {@state.strokeWidth}
         />
       </Draggable>
+      {topResizeButton}
+      {bottomResizeButton}
       {deleteButton}
     </g>
   
