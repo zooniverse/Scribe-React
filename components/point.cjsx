@@ -46,25 +46,23 @@ module.exports = React.createClass
   handleDrag: (e) ->
     @updateMark @props.getEventOffset(e)
   
+  handleResize: (e) ->
+    console.log '-=-=-= RESIZE BUTTON CLICKED =-=-=-'
+    {x,y} = @props.getEventOffset e
+    console.log "   DRAGGED TO (#{x},#{y})"
+
+  handleMouseDown: ->
+    console.log 'MOUSE DOWN. CALL FOR BACKUP!'
+
   render: ->
     console.log 'IMAGE WIDTH: ', @props.imageWidth
     transform = "
       translate(#{@state.x}, #{@state.y})
       scale(#{1}, #{1})
     "
-    topResizeButton = 
-      <Draggable>
-        <ResizeButton 
-          transform="translate(#{@props.imageWidth/2}, 0)" 
-        />
-      </Draggable>
 
-    bottomResizeButton =       
-      <Draggable>
-        <ResizeButton 
-          transform="translate(#{@props.imageWidth/2}, #{@state.markWidth})" 
-        />
-      </Draggable>
+    topResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markWidth})"
+
 
     if @props.selected
       deleteButton = 
@@ -74,7 +72,12 @@ module.exports = React.createClass
     else
       deleteButton = null
 
-    <g className="point drawing-tool" transform={"translate(0, #{@state.y-@state.markWidth/2})"} data-disabled={@props.disabled || null} data-selected={@props.selected || null}>
+    <g 
+      className = "point drawing-tool" 
+      transform = {"translate(0, #{@state.y-@state.markWidth/2})"} 
+      data-disabled = {@props.disabled || null} 
+      data-selected = {@props.selected || null}
+    >
       <Draggable onStart={@props.select} onDrag={@handleDrag}>
         <rect 
           x = 0
@@ -87,8 +90,14 @@ module.exports = React.createClass
           strokeWidth = {@state.strokeWidth}
         />
       </Draggable>
-      {topResizeButton}
-      {bottomResizeButton}
+
+      <Draggable onStart={console.log "start"} onDrag={console.log "drag"}>
+        <ResizeButton 
+          transform = {topResizeTransform} 
+          onClick = {@handleResize}  
+        />
+      </Draggable>
+
       {deleteButton}
     </g>
   

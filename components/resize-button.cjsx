@@ -5,7 +5,16 @@ React = require 'react'
 module.exports = React.createClass
   displayName: 'ResizeButton'
 
+  handleMouseDown: (e) ->
+    console.log 'RESIZING MARK ', @props
+    @props.resizeMark e
+
+  foo: ->
+    console.log 'BAR'
+
   render: ->
+
+    console.log 'PRODPSODISLKDJSLKDJSLKDJ: ', @props
     fillColor = '#26baff'
     strokeColor = '#000'
     strokeWidth = 2
@@ -23,11 +32,17 @@ module.exports = React.createClass
 
       M 0 #{radius * 0.6 }
       L #{ radius * 0.6 } 0
-
-
     "
-
-    @transferPropsTo <g className="clickable drawing-tool-delete-button" stroke={strokeColor} strokeWidth={strokeWidth} onClick={@props.onClick}>
-      <circle r={radius} fill={fillColor} />
+  
+    <g 
+      transform = {@props.transform} 
+      className = "clickable drawing-tool-resize-button" 
+      stroke = {strokeColor} 
+      strokeWidth = {strokeWidth} >
+      
+      <circle 
+        r={radius} 
+        fill={fillColor} 
+      />
       <path d={cross} transform="rotate(90)" />
     </g>
