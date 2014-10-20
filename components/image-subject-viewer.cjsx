@@ -54,9 +54,6 @@ SubjectViewer = React.createClass
       url: @props.endpoint
       dataType: "json"
       success: ((data) ->
-
-        console.log 'SUBJECTS: ', @state.subjects
-
         # DEBUG CODE
         # console.log 'FETCHED SUBJECTS: ', subject.location for subject in data
 
@@ -90,7 +87,6 @@ SubjectViewer = React.createClass
             # console.log "Finished Loading."
 
   nextSubject: () ->
-    console.log 'CLASSIFISDHLKSJDHSKLJDHSLKJDHSLKJDHSLKJH ', classification
     console.log JSON.stringify classification # DEBUG CODE
 
     for mark in [ marks... ]
@@ -100,6 +96,7 @@ SubjectViewer = React.createClass
         ymin: mark.y
 
     classification.send()
+    marks = []
 
     # prepare new classification
     if @state.subjects.shift() is undefined or @state.subjects.length <= 0
