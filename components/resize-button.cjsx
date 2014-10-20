@@ -9,12 +9,8 @@ module.exports = React.createClass
     console.log 'RESIZING MARK ', @props
     @props.resizeMark e
 
-  foo: ->
-    console.log 'BAR'
-
   render: ->
 
-    console.log 'PRODPSODISLKDJSLKDJSLKDJ: ', @props
     fillColor = '#26baff'
     strokeColor = '#000'
     strokeWidth = 2
@@ -41,6 +37,7 @@ module.exports = React.createClass
       strokeWidth = {strokeWidth} >
       
       <circle 
+        onClick={console.log "CLICK~!!!!"}
         r={radius} 
         fill={fillColor} 
       />
