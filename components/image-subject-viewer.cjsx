@@ -9,10 +9,13 @@ Draggable                     = require '../lib/draggable'
 LoadingIndicator              = require './loading-indicator'
 SubjectMetadata               = require './subject-metadata'
 ActionButton                  = require './action-button'
+TextRegionTool                = require './text-region'
 PointTool                     = require './point'
+Classification                = require '../models/classification'
 
 annotations = []
 marks = []
+classification = null
 
 ImageSubjectViewer = React.createClass # rename to Classifier
   displayName: 'ImageSubjectViewer'
@@ -52,10 +55,13 @@ SubjectViewer = React.createClass
       dataType: "json"
       success: ((data) ->
 
+        console.log 'SUBJECTS: ', @state.subjects
+
         # DEBUG CODE
         # console.log 'FETCHED SUBJECTS: ', subject.location for subject in data
 
         @setState subjects: data, =>
+          classification = new Classification @state.subjects[0]
           @loadImage @state.subjects[0].location
 
         # console.log 'Fetched Images.' # DEBUG CODE
@@ -84,19 +90,34 @@ SubjectViewer = React.createClass
             # console.log "Finished Loading."
 
   nextSubject: () ->
-      if @state.subjects.shift() is undefined or @state.subjects.length <= 0
-        @fetchSubjects()
-        return
-      else
-        @loadImage @state.subjects[0].location
-      console.log 'NEXT IMAGE: ', @state.subject1s[0].location # DEBUG CODE
+    console.log 'CLASSIFISDHLKSJDHSKLJDHSLKJDHSLKJDHSLKJH ', classification
+    console.log JSON.stringify classification # DEBUG CODE
+
+    for mark in [ marks... ]
+      classification.annotate
+        timestamp: mark.timestamp
+        ymax: mark.x
+        ymin: mark.y
+
+    classification.send()
+
+    # prepare new classification
+    if @state.subjects.shift() is undefined or @state.subjects.length <= 0
+      @fetchSubjects()
+      return
+    else
+      @loadImage @state.subjects[0].location
+
+    classification = new Classification @state.subjects[0]
+
 
   handleInitStart: (e) ->
     console.log 'handleInitStart()'
     {horizontal, vertical} = @getScale()
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
+    timestamp = (new Date).toUTCString()
     {x, y} = @getEventOffset e
-    marks.push {x, y}
+    marks.push {x, y, timestamp}
     @selectMark marks[length-1]
 
     @forceUpdate()
@@ -127,8 +148,8 @@ SubjectViewer = React.createClass
     x: ((e.pageX - pageXOffset - rect.left)) + @state.viewX
     y: ((e.pageY - pageYOffset - rect.top)) + @state.viewY
 
-  handleToolMouseDown: ->
-    console.log 'handleToolMouseDown()'
+  handleToolMouseDown: (e) ->
+    console.log 'handleToolMouseDown(): TARGET IS ', e.target
 
   selectMark: (mark) ->
     console.log 'selectMark()'
@@ -151,7 +172,7 @@ SubjectViewer = React.createClass
     tools = []
 
     for mark, key in [ marks... ]
-      tools.push new PointTool
+      tools.push new TextRegionTool
         mark: mark
         key: key
         disabled: false
@@ -178,15 +199,19 @@ SubjectViewer = React.createClass
     else
       <div className="subject-container">
         <div className="marking-surface">
+          
           <svg className="subject-viewer-svg" width={@state.imageWidth} height={@state.imageHeight} viewBox={viewBox} data-tool={@props.selectedDrawingTool?.type}>
             <rect ref="sizeRect" width={@state.imageWidth} height={@state.imageHeight} />
+            
             <Draggable onStart={@handleInitStart} onDrag={@handleInitDrag} onEnd={@handleInitRelease}>
               <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
             </Draggable>
             <g className="subject-viewer-tools" onMouseDown={@handleToolMouseDown}>
               {tools}
             </g>
+
           </svg>
+
         </div>
         <p>{@state.subjects[0].location}</p>
         <div className="subject-ui">
