@@ -39,9 +39,9 @@ module.exports = React.createClass
       stroke = {strokeColor} 
       strokeWidth = {strokeWidth} >
       
-      <circle 
-        r={radius} 
+      <rect
+        width={2*radius}
+        height={radius} 
         fill={fillColor} 
       />
-      <path d={cross} transform="rotate(90)" />
     </g>

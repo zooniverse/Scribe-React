@@ -37,7 +37,7 @@ module.exports = React.createClass
     document.body.classList.add 'dragging'
 
   handleDrag: (e) ->
-    console.log 'DRAGGABLE: handleDrag()'
+    console.log 'DRAGGABLE: handleDrag(): @props.onDrag? = ', @props.onDrag
     @props.onDrag? e
 
   handleEnd: (e) ->

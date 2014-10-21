@@ -63,8 +63,8 @@ module.exports = React.createClass
       scale(#{1}, #{1})
     "
 
-    topResizeTransform = "translate(#{@props.imageWidth/2}, 0)"
-    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight})"
+    topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-10/2})"
+    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-10/2})"
 
     topResizeButton = 
       <ResizeButton handleTopResize={@handleTopResize} transform={topResizeTransform} />
@@ -73,7 +73,7 @@ module.exports = React.createClass
       deleteButton = 
         <DeleteButton 
           transform="translate(25, #{@state.markHeight/2})" 
-          onClick={@props.onClickDelete} />
+          onDrag={console.log 'What a DRAG, man.'} />
     else
       deleteButton = null
 
