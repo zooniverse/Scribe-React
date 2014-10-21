@@ -73,7 +73,7 @@ module.exports = React.createClass
       deleteButton = 
         <DeleteButton 
           transform="translate(25, #{@state.markHeight/2})" 
-          onDrag={console.log 'What a DRAG, man.'} />
+          onClick={@props.onClickDelete} />
     else
       deleteButton = null
 
