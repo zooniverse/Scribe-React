@@ -11,7 +11,7 @@ module.exports = React.createClass
 
   render: ->
 
-    console.log 'resize-button PROPS: ', @props
+    # console.log 'resize-button PROPS: ', @props
 
     fillColor = '#26baff'
     strokeColor = '#000'

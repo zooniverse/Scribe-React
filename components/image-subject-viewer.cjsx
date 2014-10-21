@@ -109,21 +109,22 @@ SubjectViewer = React.createClass
 
 
   handleInitStart: (e) ->
-    console.log 'handleInitStart()'
+    # console.log 'handleInitStart()'
     {horizontal, vertical} = @getScale()
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
     timestamp = (new Date).toUTCString()
+    key = marks.length
     {x, y} = @getEventOffset e
-    marks.push {x, y, timestamp}
+    marks.push {x, y, key, timestamp}
     @selectMark marks[length-1]
 
     @forceUpdate()
 
   handleInitDrag: (e) ->
-    console.log 'handleInitDrag()'
+    # console.log 'handleInitDrag()'
 
   handleInitRelease: (e) ->
-    console.log 'handleInitRelease()'
+    # console.log 'handleInitRelease()'
 
   setView: (viewX, viewY, viewWidth, viewHeight) ->
     @setState {viewX, viewY, viewWidth, viewHeight}
@@ -145,11 +146,12 @@ SubjectViewer = React.createClass
     x: ((e.pageX - pageXOffset - rect.left)) + @state.viewX
     y: ((e.pageY - pageYOffset - rect.top)) + @state.viewY
 
-  handleToolMouseDown: (e) ->
-    console.log 'handleToolMouseDown(): TARGET IS ', e.target
+  handleToolMouseDown: ->
+    console.log 'handleToolMouseDown()'
 
   selectMark: (mark) ->
-    console.log 'selectMark()'
+    # console.log 'selectMark()'
+    console.log 'SELECTED MARK : ', mark
     @setState selectedMark: mark
 
     @forceUpdate()
@@ -160,25 +162,17 @@ SubjectViewer = React.createClass
     #   marks.push mark
     #   @setState selectedMark: mark
 
-  onClickDelete: (e, key) ->
-    console.log "dleeeet: ", e.target
+  onClickDelete: (key) ->
+    console.log "DELETING MARK WITH KEY: ", key
+    for mark, i in [ marks... ]
+      if i is key
+        console.log 'MARK TO DELETE: ', mark
 
   render: ->
-    console.log 'SELECTED MARK: ', @state.selectedMark
-
     tools = []
 
     for mark, key in [ marks... ]
       tools.push new TextRegionTool
-        mark: mark
-        key: key
-        disabled: false
-        selected: mark is @state.selectedMark
-        select: @selectMark.bind null, mark
-        getEventOffset: @getEventOffset
-        onClickDelete: @onClickDelete  
-        imageWidth: @state.imageWidth
-        imageHeight: @state.imageHeight
 
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
 
@@ -197,15 +191,48 @@ SubjectViewer = React.createClass
       <div className="subject-container">
         <div className="marking-surface">
           
-          <svg className="subject-viewer-svg" width={@state.imageWidth} height={@state.imageHeight} viewBox={viewBox} data-tool={@props.selectedDrawingTool?.type}>
-            <rect ref="sizeRect" width={@state.imageWidth} height={@state.imageHeight} />
+          <svg 
+            className = "subject-viewer-svg" 
+            width = {@state.imageWidth} 
+            height = {@state.imageHeight} 
+            viewBox = {viewBox} 
+            data-tool = {@props.selectedDrawingTool?.type} >
+
+            <rect 
+              ref = "sizeRect" 
+              width = {@state.imageWidth} 
+              height = {@state.imageHeight} />
             
-            <Draggable onStart={@handleInitStart} onDrag={@handleInitDrag} onEnd={@handleInitRelease}>
-              <SVGImage src={@state.subjects[0].location} width={@state.imageWidth} height={@state.imageHeight} />
+            <Draggable 
+              onStart = {@handleInitStart} 
+              onDrag  = {@handleInitDrag} 
+              onEnd   = {@handleInitRelease} >
+              <SVGImage 
+                src = {@state.subjects[0].location} 
+                width = {@state.imageWidth} 
+                height = {@state.imageHeight} />
+
             </Draggable>
-            <g className="subject-viewer-tools" onMouseDown={@handleToolMouseDown}>
-              {tools}
-            </g>
+
+
+            { tools.map ((tool, i) ->
+              <TextRegionTool 
+                onClick = {@handleToolMouseDown.bind(this, i)} 
+                key = {i} 
+                mark = {marks[i]}
+                disabled = {false}
+                imageWidth = {@state.imageWidth}
+                imageHeight = {@state.imageHeight}
+                getEventOffset = {@getEventOffset}
+                onClickDelete = {@onClickDelete}
+                select = {@selectMark.bind null, mark}
+                selected = {@mark is @state.selectedMark}
+                onClickDelete = {@onClickDelete} 
+              >
+                {tool}
+              </TextRegionTool>
+            ), @}
+
 
           </svg>
 

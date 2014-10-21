@@ -47,9 +47,15 @@ module.exports = React.createClass
     @updateMark @props.getEventOffset(e)
   
   handleTopResize: (e) ->
-    console.log '-=-=-= RESIZE BUTTON CLICKED =-=-=-'
+    console.log '-=-=-= TOP RESIZE BUTTON CLICKED =-=-=-'
     {x,y} = @props.getEventOffset e
     console.log "   DRAGGED TO (#{x},#{y})"
+
+  handleBottomResize: (e) ->
+    console.log '-=-=-= BOTTOM RESIZE BUTTON CLICKED =-=-=-'
+    {x,y} = @props.getEventOffset e
+    console.log "   DRAGGED TO (#{x},#{y})"
+
 
   handleMouseDown: ->
     console.log 'MOUSE DOWN. CALL FOR BACKUP!'
@@ -66,14 +72,12 @@ module.exports = React.createClass
     topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-10/2})"
     bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-10/2})"
 
-    topResizeButton = 
-      <ResizeButton handleTopResize={@handleTopResize} transform={topResizeTransform} />
-
     if @props.selected
       deleteButton = 
         <DeleteButton 
-          transform="translate(25, #{@state.markHeight/2})" 
-          onClick={@props.onClickDelete} />
+          transform = "translate(25, #{@state.markHeight/2})" 
+          onClick = {@props.onClickDelete.bind null, @props.key} 
+        />
     else
       deleteButton = null
 
@@ -83,26 +87,27 @@ module.exports = React.createClass
       data-disabled = {@props.disabled || null} 
       data-selected = {@props.selected || null}
     >
-      <Draggable onStart={@props.select} onDrag={@handleDrag}>
+      <Draggable 
+        onStart = {@props.select} 
+        onDrag = {@handleDrag} >
         <rect 
-          x = 0
-          y = 0
-          viewBox = {"0 0 @props.imageWidth @props.imageHeight"}
-          width = {@props.imageWidth}
-          height = {"100"}
-          fill = {"rgba(0,0,0,0.5)"}
-          stroke = {@state.strokeColor}
+          x           = 0
+          y           = 0
+          viewBox     = {"0 0 @props.imageWidth @props.imageHeight"}
+          width       = {@props.imageWidth}
+          height      = {"100"}
+          fill        = {"rgba(0,0,0,0.5)"}
+          stroke      = {@state.strokeColor}
           strokeWidth = {@state.strokeWidth}
         />
       </Draggable>
 
-      {topResizeButton}
+      <Draggable onStart={console.log 'START CLICK!!!'} >
+        <ResizeButton transform = {topResizeTransform} />
+      </Draggable>
 
       <Draggable>
-        <ResizeButton 
-          transform = {bottomResizeTransform} 
-          onClick = {@handleResize}  
-        />
+        <ResizeButton transform = {bottomResizeTransform} />
       </Draggable>
 
       {deleteButton}
