@@ -47,6 +47,9 @@ module.exports = React.createClass
     @updateMark @props.getEventOffset(e)
   
   handleTopResize: (e) ->
+    @setState topResizeTransform: "translate(#{@props.imageWidth/2}, #{0-10/2})"
+    @setState bottomResizeTransform: "translate(#{@props.imageWidth/2}, #{@state.markHeight-10/2})"
+
     console.log '-=-=-= TOP RESIZE BUTTON CLICKED =-=-=-'
     {x,y} = @props.getEventOffset e
     console.log "   DRAGGED TO (#{x},#{y})"
@@ -55,7 +58,6 @@ module.exports = React.createClass
     console.log '-=-=-= BOTTOM RESIZE BUTTON CLICKED =-=-=-'
     {x,y} = @props.getEventOffset e
     console.log "   DRAGGED TO (#{x},#{y})"
-
 
   handleMouseDown: ->
     console.log 'MOUSE DOWN. CALL FOR BACKUP!'
@@ -71,6 +73,7 @@ module.exports = React.createClass
 
     topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-10/2})"
     bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-10/2})"
+
 
     if @props.selected
       deleteButton = 
@@ -102,7 +105,11 @@ module.exports = React.createClass
         />
       </Draggable>
 
-      <ResizeButton transform = {topResizeTransform} />
+      <ResizeButton 
+        handleTopResize = {@handleTopResize} 
+        transform = {topResizeTransform} 
+      />
+
       <ResizeButton transform = {bottomResizeTransform} />
 
 

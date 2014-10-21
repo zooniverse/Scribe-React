@@ -12,30 +12,15 @@ module.exports = React.createClass
 
   handleDrag: (e) ->
     console.log 'BAR ', e
-    
+    @props.handleTopResize()
 
   render: ->
-
-    # console.log 'resize-button PROPS: ', @props
 
     fillColor = '#26baff'
     strokeColor = '#000'
     strokeWidth = 2
-    radius = 10
-
-    cross = "
-      M #{-radius * 0.6} 0
-      L 0 #{radius * 0.6 }
-
-      M 0 #{-radius * 0.6 }
-      L #{ -radius * 0.6 } 0
-
-      M #{radius * 0.6 } 0
-      L 0 #{-radius * 0.6 }
-
-      M 0 #{radius * 0.6 }
-      L #{ radius * 0.6 } 0
-    "
+    width = 10
+    height = 5
   
     <Draggable onDrag={@handleDrag}>
       <g 
@@ -45,8 +30,8 @@ module.exports = React.createClass
         strokeWidth = {strokeWidth} >
         
         <rect
-          width={2*radius}
-          height={radius} 
+          width={width}
+          height={height} 
           fill={fillColor} 
         />
       </g>

@@ -18,13 +18,12 @@ module.exports = React.createClass
   render: ->
     # NOTE: This won't actually render any new DOM nodes,
     # it just attaches a `mousedown` listener to its child.
-    console.log "Atttaching events",@, @props.children
     cloneWithProps @props.children,
       className: 'draggable'
       onMouseDown: @handleStart
 
   handleStart: (e) ->
-    console.log 'DRAGGABLE: handleStart() Element type'
+    # console.log 'DRAGGABLE: handleStart()'
     e.preventDefault()
     document.addEventListener 'mousemove', @handleDrag
     document.addEventListener 'mouseup', @handleEnd
