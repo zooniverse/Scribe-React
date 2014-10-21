@@ -1,6 +1,7 @@
 # @cjsx React.DOM
 
 React = require 'react'
+Draggable = require '../lib/draggable'
 
 module.exports = React.createClass
   displayName: 'ResizeButton'
@@ -8,6 +9,10 @@ module.exports = React.createClass
   handleMouseDown: (e) ->
     console.log 'RESIZING MARK ', @props
     @props.resizeMark e
+
+  handleDrag: (e) ->
+    console.log 'BAR ', e
+    
 
   render: ->
 
@@ -32,16 +37,17 @@ module.exports = React.createClass
       L #{ radius * 0.6 } 0
     "
   
-    <g 
-      
-      transform = {@props.transform} 
-      className = "clickable drawing-tool-resize-button" 
-      stroke = {strokeColor} 
-      strokeWidth = {strokeWidth} >
-      
-      <rect
-        width={2*radius}
-        height={radius} 
-        fill={fillColor} 
-      />
-    </g>
+    <Draggable onDrag={@handleDrag}>
+      <g 
+        transform = {@props.transform} 
+        className = "clickable drawing-tool-resize-button" 
+        stroke = {strokeColor} 
+        strokeWidth = {strokeWidth} >
+        
+        <rect
+          width={2*radius}
+          height={radius} 
+          fill={fillColor} 
+        />
+      </g>
+    </Draggable>

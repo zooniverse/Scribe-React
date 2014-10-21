@@ -102,13 +102,9 @@ module.exports = React.createClass
         />
       </Draggable>
 
-      <Draggable onStart={console.log 'START CLICK!!!'} >
-        <ResizeButton transform = {topResizeTransform} />
-      </Draggable>
+      <ResizeButton transform = {topResizeTransform} />
+      <ResizeButton transform = {bottomResizeTransform} />
 
-      <Draggable>
-        <ResizeButton transform = {bottomResizeTransform} />
-      </Draggable>
 
       {deleteButton}
     </g>
