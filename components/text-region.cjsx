@@ -21,7 +21,7 @@ module.exports = React.createClass
   getInitialState: ->
     x: @props.mark.x
     y: @props.mark.y
-    markWidth: 100
+    markHeight: 100
     radius: 40
     fillColor: 'rgba(0,0,0,0.5)'
     strokeColor: '#fff'
@@ -46,13 +46,16 @@ module.exports = React.createClass
   handleDrag: (e) ->
     @updateMark @props.getEventOffset(e)
   
-  handleResize: (e) ->
+  handleTopResize: (e) ->
     console.log '-=-=-= RESIZE BUTTON CLICKED =-=-=-'
     {x,y} = @props.getEventOffset e
     console.log "   DRAGGED TO (#{x},#{y})"
 
   handleMouseDown: ->
     console.log 'MOUSE DOWN. CALL FOR BACKUP!'
+
+  foo: ->
+    console.log 'BAR'
 
   render: ->
     transform = "
@@ -61,20 +64,22 @@ module.exports = React.createClass
     "
 
     topResizeTransform = "translate(#{@props.imageWidth/2}, 0)"
-    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markWidth})"
+    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight})"
 
+    topResizeButton = 
+      <ResizeButton handleTopResize={@handleTopResize} transform={topResizeTransform} />
 
     if @props.selected
       deleteButton = 
         <DeleteButton 
-          transform="translate(25, #{@state.markWidth/2})" 
+          transform="translate(25, #{@state.markHeight/2})" 
           onClick={@props.onClickDelete} />
     else
       deleteButton = null
 
     <g 
       className = "point drawing-tool" 
-      transform = {"translate(0, #{@state.y-@state.markWidth/2})"} 
+      transform = {"translate(0, #{@state.y-@state.markHeight/2})"} 
       data-disabled = {@props.disabled || null} 
       data-selected = {@props.selected || null}
     >
@@ -91,12 +96,7 @@ module.exports = React.createClass
         />
       </Draggable>
 
-      <Draggable>
-        <ResizeButton 
-          transform = {topResizeTransform} 
-          onClick = {@handleResize}  
-        />
-      </Draggable>
+      {topResizeButton}
 
       <Draggable>
         <ResizeButton 

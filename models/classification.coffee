@@ -6,9 +6,6 @@ class Classification
     @user_agent = window.navigator.userAgent
     @annotations ?= []
 
-    console.log 'SUBJECT: ', subject
-
-
   annotate: (annotation) ->
     @annotations.push annotation
     return annotation

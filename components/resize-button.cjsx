@@ -11,6 +11,8 @@ module.exports = React.createClass
 
   render: ->
 
+    console.log 'resize-button PROPS: ', @props
+
     fillColor = '#26baff'
     strokeColor = '#000'
     strokeWidth = 2
@@ -31,13 +33,13 @@ module.exports = React.createClass
     "
   
     <g 
+      
       transform = {@props.transform} 
       className = "clickable drawing-tool-resize-button" 
       stroke = {strokeColor} 
       strokeWidth = {strokeWidth} >
       
       <circle 
-        onClick={console.log "CLICK~!!!!"}
         r={radius} 
         fill={fillColor} 
       />
