@@ -33,7 +33,9 @@ module.exports = React.createClass
 
   updateMark: ({x,y}) ->
     # console.log 'updateMark() ', e
-    @setState {x,y}
+    @setState 
+      x: x
+      y: y
 
   handleMouseOver: ->
     console.log 'onMouseOver()'
