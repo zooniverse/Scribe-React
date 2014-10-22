@@ -29,8 +29,8 @@ module.exports = React.createClass
     upperOffset: 0
     lowerOffset: 0
 
-    y_upper: @props.mark.y - @props.defaultMarkHeight/2
-    y_lower: @props.mark.y + @props.defaultMarkHeight/2
+    yUpper: @props.mark.y - @props.defaultMarkHeight/2
+    yLower: @props.mark.y + @props.defaultMarkHeight/2
 
   updateMark: ({x,y}) ->
     # console.log 'updateMark() ', e
@@ -75,6 +75,13 @@ module.exports = React.createClass
     console.log 'BAR'
 
   render: ->
+
+    console.log 'UPPER POSITION: ', @state.yUpper
+    console.log 'LOWER POSITION: ', @state.yLower
+
+    console.log 'UPPER OFFSET: ', @state.upperOffset    
+    console.log 'LOWER OFFSET: ', @state.lowerOffset
+
     transform = "
       translate(#{@state.x}, #{@state.y})
       scale(#{1}, #{1})
@@ -106,10 +113,11 @@ module.exports = React.createClass
           y           = 0
           viewBox     = {"0 0 @props.imageWidth @props.imageHeight"}
           width       = {@props.imageWidth}
-          height      = {@state.markHeight}
+          height      = {@state.markHeight-@state.upperOffset}
           fill        = {"rgba(0,0,0,0.5)"}
           stroke      = {@state.strokeColor}
           strokeWidth = {@state.strokeWidth}
+          transform   = {"translate(0,#{@state.upperOffset})"}
         />
       </Draggable>
 
