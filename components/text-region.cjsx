@@ -82,6 +82,8 @@ module.exports = React.createClass
     console.log 'UPPER OFFSET: ', @state.upperOffset    
     console.log 'LOWER OFFSET: ', @state.lowerOffset
 
+    console.log 'MARK HEIGHT: ', @state.markHeight
+
     transform = "
       translate(#{@state.x}, #{@state.y})
       scale(#{1}, #{1})
@@ -113,7 +115,7 @@ module.exports = React.createClass
           y           = 0
           viewBox     = {"0 0 @props.imageWidth @props.imageHeight"}
           width       = {@props.imageWidth}
-          height      = {@state.markHeight-@state.upperOffset}
+          height      = {@state.markHeight-@state.upperOffset+@state.lowerOffset}
           fill        = {"rgba(0,0,0,0.5)"}
           stroke      = {@state.strokeColor}
           strokeWidth = {@state.strokeWidth}

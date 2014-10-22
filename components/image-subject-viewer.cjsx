@@ -108,12 +108,15 @@ SubjectViewer = React.createClass
     classification = new Classification @state.subjects[0]
 
   handleInitStart: (e) ->
-    # console.log 'handleInitStart()'
+    console.log 'handleInitStart()'
+
     {horizontal, vertical} = @getScale()
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
     timestamp = (new Date).toUTCString()
     key = marks.length
     {x, y} = @getEventOffset e
+    console.log "CLICK (#{x},#{y})"
+
     marks.push {x, y, key, timestamp}
     @selectMark marks[length-1]
 
