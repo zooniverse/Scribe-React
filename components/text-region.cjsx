@@ -22,7 +22,6 @@ module.exports = React.createClass
     x: @props.mark.x
     y: @props.mark.y
     markHeight: @props.defaultMarkHeight
-    radius: 40
     fillColor: 'rgba(0,0,0,0.5)'
     strokeColor: '#26baff'
     strokeWidth: 3
