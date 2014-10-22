@@ -57,7 +57,7 @@ module.exports = React.createClass
     {x,y} = @props.getEventOffset e
     @setState
       upperOffset: y-@state.y+@state.markHeight/2
-    console.log "   DRAGGED TO (#{x},#{y}): upperOffset = ", @state.upperOffset
+    console.log "   UPPER SCRUBBER POSITION: ", @state.upperOffset
 
   handleBottomResize: (e) ->
     console.log 'TextRegion: handleBottomResize()'
@@ -65,7 +65,7 @@ module.exports = React.createClass
     {x,y} = @props.getEventOffset e
     @setState
       lowerOffset: y-@state.y-@state.markHeight/2
-    console.log "   DRAGGED TO (#{x},#{y}): lowerOffset = ", @state.lowerOffset
+    console.log "   LOWED SCRUBBER POSITION: ", @state.lowerOffset
 
 
   handleMouseDown: ->
@@ -80,8 +80,8 @@ module.exports = React.createClass
       scale(#{1}, #{1})
     "
 
-    topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-16/2+@state.upperOffset})"
-    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-16/2+@state.lowerOffset})"
+    topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-@props.scrubberHeight/2+@state.upperOffset})"
+    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-@props.scrubberHeight/2+@state.lowerOffset})"
 
     if @props.selected
       deleteButton = 
@@ -106,7 +106,7 @@ module.exports = React.createClass
           y           = 0
           viewBox     = {"0 0 @props.imageWidth @props.imageHeight"}
           width       = {@props.imageWidth}
-          height      = {"100"}
+          height      = {@state.markHeight}
           fill        = {"rgba(0,0,0,0.5)"}
           stroke      = {@state.strokeColor}
           strokeWidth = {@state.strokeWidth}
@@ -116,11 +116,15 @@ module.exports = React.createClass
       <ResizeButton 
         handleResize = {@handleTopResize} 
         transform = {topResizeTransform} 
+        scrubberHeight = {@props.scrubberHeight}
+        scrubberWidth = {@props.scrubberWidth}
       />
 
       <ResizeButton 
         handleResize = {@handleBottomResize} 
         transform = {bottomResizeTransform} 
+        scrubberHeight = {@props.scrubberHeight}
+        scrubberWidth = {@props.scrubberWidth}
       />
 
       {deleteButton}

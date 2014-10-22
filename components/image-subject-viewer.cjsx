@@ -221,6 +221,8 @@ SubjectViewer = React.createClass
                 selected = {@mark is @state.selectedMark}
                 onClickDelete = {@onClickDelete} 
                 defaultMarkHeight = {100}
+                scrubberWidth = {64}
+                scrubberHeight = {16}
               >
                 {tool}
               </TextRegionTool>
