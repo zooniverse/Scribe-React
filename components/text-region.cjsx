@@ -24,8 +24,10 @@ module.exports = React.createClass
     markHeight: 100
     radius: 40
     fillColor: 'rgba(0,0,0,0.5)'
-    strokeColor: '#fff'
+    strokeColor: '#26baff'
     strokeWidth: 3
+    topYOffset: 0
+    bottomYOffset: 0
 
   updateMark: ({x,y}) ->
     # console.log 'updateMark() ', e
@@ -47,17 +49,21 @@ module.exports = React.createClass
     @updateMark @props.getEventOffset(e)
   
   handleTopResize: (e) ->
-    @setState topResizeTransform: "translate(#{@props.imageWidth/2}, #{0-10/2})"
-    @setState bottomResizeTransform: "translate(#{@props.imageWidth/2}, #{@state.markHeight-10/2})"
-
-    console.log '-=-=-= TOP RESIZE BUTTON CLICKED =-=-=-'
+    console.log 'TextRegion: handleTopResize()'
+    console.log "   CLICKED ON: (#{e.x},#{e.y})"
     {x,y} = @props.getEventOffset e
-    console.log "   DRAGGED TO (#{x},#{y})"
+    @setState
+      topYOffset: y-@state.y+50
+    console.log "   DRAGGED TO (#{x},#{y}): topYOffset = ", @state.topYOffset
 
   handleBottomResize: (e) ->
-    console.log '-=-=-= BOTTOM RESIZE BUTTON CLICKED =-=-=-'
+    console.log 'TextRegion: handleBottomResize()'
+    console.log "   CLICKED ON: (#{e.x},#{e.y})"
     {x,y} = @props.getEventOffset e
-    console.log "   DRAGGED TO (#{x},#{y})"
+    @setState
+      bottomYOffset: y-@state.y-50
+    console.log "   DRAGGED TO (#{x},#{y}): bottomYOffset = ", @state.bottomYOffset
+
 
   handleMouseDown: ->
     console.log 'MOUSE DOWN. CALL FOR BACKUP!'
@@ -71,9 +77,8 @@ module.exports = React.createClass
       scale(#{1}, #{1})
     "
 
-    topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-10/2})"
-    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-10/2})"
-
+    topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-16/2+@state.topYOffset})"
+    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-16/2+@state.bottomYOffset})"
 
     if @props.selected
       deleteButton = 
@@ -106,12 +111,14 @@ module.exports = React.createClass
       </Draggable>
 
       <ResizeButton 
-        handleTopResize = {@handleTopResize} 
+        handleResize = {@handleTopResize} 
         transform = {topResizeTransform} 
       />
 
-      <ResizeButton transform = {bottomResizeTransform} />
-
+      <ResizeButton 
+        handleResize = {@handleBottomResize} 
+        transform = {bottomResizeTransform} 
+      />
 
       {deleteButton}
     </g>

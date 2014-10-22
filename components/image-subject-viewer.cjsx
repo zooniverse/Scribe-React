@@ -107,7 +107,6 @@ SubjectViewer = React.createClass
 
     classification = new Classification @state.subjects[0]
 
-
   handleInitStart: (e) ->
     # console.log 'handleInitStart()'
     {horizontal, vertical} = @getScale()
@@ -155,12 +154,6 @@ SubjectViewer = React.createClass
     @setState selectedMark: mark
 
     @forceUpdate()
-
-    # index = marks?.indexOf mark
-    # if index? and index isnt -1
-    #   marks.splice index, 1
-    #   marks.push mark
-    #   @setState selectedMark: mark
 
   onClickDelete: (key) ->
     console.log "DELETING MARK WITH KEY: ", key
@@ -224,7 +217,6 @@ SubjectViewer = React.createClass
                 imageWidth = {@state.imageWidth}
                 imageHeight = {@state.imageHeight}
                 getEventOffset = {@getEventOffset}
-                onClickDelete = {@onClickDelete}
                 select = {@selectMark.bind null, mark}
                 selected = {@mark is @state.selectedMark}
                 onClickDelete = {@onClickDelete} 

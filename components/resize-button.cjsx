@@ -6,10 +6,6 @@ Draggable = require '../lib/draggable'
 module.exports = React.createClass
   displayName: 'ResizeButton'
 
-  handleMouseDown: (e) ->
-    console.log 'RESIZING MARK ', @props
-    @props.resizeMark e
-
   handleDrag: (e) ->
     console.log 'BAR ', e
     @props.handleTopResize()
@@ -18,11 +14,14 @@ module.exports = React.createClass
 
     fillColor = '#26baff'
     strokeColor = '#000'
-    strokeWidth = 2
-    width = 10
-    height = 5
+    strokeWidth = 1
+    width = 32
+    height = 16
   
-    <Draggable onDrag={@handleDrag}>
+    <Draggable 
+      onStart = {@props.handleResize} 
+      onDrag = {@props.handleResize} 
+    >
       <g 
         transform = {@props.transform} 
         className = "clickable drawing-tool-resize-button" 
