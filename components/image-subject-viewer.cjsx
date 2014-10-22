@@ -92,8 +92,8 @@ SubjectViewer = React.createClass
     for mark in [ marks... ]
       classification.annotate
         timestamp: mark.timestamp
-        ymax: mark.x
-        ymin: mark.y
+        x: mark.x
+        y: mark.y
 
     classification.send()
     marks = []
@@ -220,6 +220,7 @@ SubjectViewer = React.createClass
                 select = {@selectMark.bind null, mark}
                 selected = {@mark is @state.selectedMark}
                 onClickDelete = {@onClickDelete} 
+                defaultMarkHeight = {100}
               >
                 {tool}
               </TextRegionTool>

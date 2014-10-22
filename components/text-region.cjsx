@@ -21,13 +21,16 @@ module.exports = React.createClass
   getInitialState: ->
     x: @props.mark.x
     y: @props.mark.y
-    markHeight: 100
+    markHeight: @props.defaultMarkHeight
     radius: 40
     fillColor: 'rgba(0,0,0,0.5)'
     strokeColor: '#26baff'
     strokeWidth: 3
-    topYOffset: 0
-    bottomYOffset: 0
+    upperOffset: 0
+    lowerOffset: 0
+
+    y_upper: @props.mark.y - @props.defaultMarkHeight/2
+    y_lower: @props.mark.y + @props.defaultMarkHeight/2
 
   updateMark: ({x,y}) ->
     # console.log 'updateMark() ', e
@@ -53,16 +56,16 @@ module.exports = React.createClass
     console.log "   CLICKED ON: (#{e.x},#{e.y})"
     {x,y} = @props.getEventOffset e
     @setState
-      topYOffset: y-@state.y+50
-    console.log "   DRAGGED TO (#{x},#{y}): topYOffset = ", @state.topYOffset
+      upperOffset: y-@state.y+@state.markHeight/2
+    console.log "   DRAGGED TO (#{x},#{y}): upperOffset = ", @state.upperOffset
 
   handleBottomResize: (e) ->
     console.log 'TextRegion: handleBottomResize()'
     console.log "   CLICKED ON: (#{e.x},#{e.y})"
     {x,y} = @props.getEventOffset e
     @setState
-      bottomYOffset: y-@state.y-50
-    console.log "   DRAGGED TO (#{x},#{y}): bottomYOffset = ", @state.bottomYOffset
+      lowerOffset: y-@state.y-@state.markHeight/2
+    console.log "   DRAGGED TO (#{x},#{y}): lowerOffset = ", @state.lowerOffset
 
 
   handleMouseDown: ->
@@ -77,8 +80,8 @@ module.exports = React.createClass
       scale(#{1}, #{1})
     "
 
-    topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-16/2+@state.topYOffset})"
-    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-16/2+@state.bottomYOffset})"
+    topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-16/2+@state.upperOffset})"
+    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-16/2+@state.lowerOffset})"
 
     if @props.selected
       deleteButton = 
