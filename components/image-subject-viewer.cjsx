@@ -121,7 +121,6 @@ SubjectViewer = React.createClass
     marks.push {x, y, key, timestamp}
 
     @setState marks: marks
-    console.log 'MARK TO SELECT: ', @state.marks[@state.marks.length-1]
     @selectMark @state.marks[@state.marks.length-1]
 
     # @forceUpdate()
@@ -156,14 +155,25 @@ SubjectViewer = React.createClass
     console.log 'handleToolMouseDown()'
 
   selectMark: (mark) ->
+    console.log 'selectMark()'
+    console.log     '> mark selected: ', mark.key
     return if mark is @state.selectedMark 
     @setState selectedMark: mark
 
   onClickDelete: (key) ->
+    console.log 'STATE IS: ', @state
     console.log "DELETING MARK WITH KEY: ", key
-    for mark, i in [ @state.marks... ]
-      if i is key
-        console.log 'MARK TO DELETE: ', mark
+    marks = @state.marks
+    console.log 'MARKS::::DJSLKDJSLKDJSLKDJSDKLJ ', marks
+    for mark, i in [ marks... ]
+      console.log 'CHECKING OUT MARK: ', mark
+      if mark.key is key
+        console.log 'KEY MATCHED!!!!'
+        console.log '<<< BEFORE SPLICE >>>', marks
+        marks.splice(i, 1)
+        console.log '<<< AFTER SPLICE >>>', marks
+
+    @setState marks: marks
 
   render: ->
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
@@ -208,21 +218,19 @@ SubjectViewer = React.createClass
 
             { @state.marks.map ((mark, i) ->
               <TextRegionTool 
-                onClick = {@handleToolMouseDown.bind(this, i)} 
-                key = {i} 
-                mark = {@state.marks[i]}
+                key = {mark.key} 
+                mark = {mark}
                 disabled = {false}
                 imageWidth = {@state.imageWidth}
                 imageHeight = {@state.imageHeight}
                 getEventOffset = {@getEventOffset}
                 select = {@selectMark.bind null, mark}
-                selected = {@state.marks[i] is @state.selectedMark}
+                selected = {mark is @state.selectedMark}
                 onClickDelete = {@onClickDelete} 
                 defaultMarkHeight = {100}
                 scrubberWidth = {64}
                 scrubberHeight = {16}
               >
-                {mark}
               </TextRegionTool>
             ), @}
 
