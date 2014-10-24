@@ -9,6 +9,8 @@
       width 840px
       text-align center
       display inline-block
+      
+
 
     .subject-ui
       background-color rgba(0,0,0,0.75)
@@ -44,3 +46,19 @@
     //     .dragging &
     //       cursor: grabbing
     //       cursor: -webkit-grabbing
+
+  .subject-viewer-svg
+    .drawing-tool
+      cursor grab
+      cursor -webkit-grab
+      &:active
+        cursor grabbing
+        cursor -webkit-grabbing
+      .drawing-tool-resize-button
+        cursor grab
+        cursor -webkit-grab
+        &:active
+          cursor grabbing
+          cursor -webkit-grabbing
+      .drawing-tool-delete-button
+        cursor pointer
