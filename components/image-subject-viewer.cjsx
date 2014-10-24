@@ -13,8 +13,6 @@ TextRegionTool                = require './text-region'
 PointTool                     = require './point'
 Classification                = require '../models/classification'
 
-annotations = []
-marks = []
 classification = null
 
 ImageSubjectViewer = React.createClass # rename to Classifier
@@ -32,6 +30,8 @@ SubjectViewer = React.createClass
   getInitialState: ->
     subjects: example_subjects # TODO: need to remove this
 
+    marks: []
+    tools: []
     loading: false
 
     frame: 0
@@ -89,14 +89,14 @@ SubjectViewer = React.createClass
   nextSubject: () ->
     console.log JSON.stringify classification # DEBUG CODE
 
-    for mark in [ marks... ]
+    for mark in [ @state.marks... ]
       classification.annotate
         timestamp: mark.timestamp
         x: mark.x
         y: mark.y
 
     classification.send()
-    marks = []
+    @setState marks: [] # clear marks for next subject
 
     # prepare new classification
     if @state.subjects.shift() is undefined or @state.subjects.length <= 0
@@ -113,14 +113,18 @@ SubjectViewer = React.createClass
     {horizontal, vertical} = @getScale()
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
     timestamp = (new Date).toUTCString()
-    key = marks.length
+    key = @state.marks.length
     {x, y} = @getEventOffset e
     console.log "CLICK (#{x},#{y})"
 
+    marks = @state.marks
     marks.push {x, y, key, timestamp}
-    @selectMark marks[length-1]
 
-    @forceUpdate()
+    @setState marks: marks
+    console.log 'MARK TO SELECT: ', @state.marks[@state.marks.length-1]
+    @selectMark @state.marks[@state.marks.length-1]
+
+    # @forceUpdate()
 
   handleInitDrag: (e) ->
     # console.log 'handleInitDrag()'
@@ -152,24 +156,16 @@ SubjectViewer = React.createClass
     console.log 'handleToolMouseDown()'
 
   selectMark: (mark) ->
-    # console.log 'selectMark()'
-    console.log 'SELECTED MARK : ', mark
+    return if mark is @state.selectedMark 
     @setState selectedMark: mark
-
-    @forceUpdate()
 
   onClickDelete: (key) ->
     console.log "DELETING MARK WITH KEY: ", key
-    for mark, i in [ marks... ]
+    for mark, i in [ @state.marks... ]
       if i is key
         console.log 'MARK TO DELETE: ', mark
 
   render: ->
-    tools = []
-
-    for mark, key in [ marks... ]
-      tools.push new TextRegionTool
-
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
 
     if @state.loading
@@ -210,24 +206,23 @@ SubjectViewer = React.createClass
 
             </Draggable>
 
-
-            { tools.map ((tool, i) ->
+            { @state.marks.map ((mark, i) ->
               <TextRegionTool 
                 onClick = {@handleToolMouseDown.bind(this, i)} 
                 key = {i} 
-                mark = {marks[i]}
+                mark = {@state.marks[i]}
                 disabled = {false}
                 imageWidth = {@state.imageWidth}
                 imageHeight = {@state.imageHeight}
                 getEventOffset = {@getEventOffset}
                 select = {@selectMark.bind null, mark}
-                selected = {@mark is @state.selectedMark}
+                selected = {@state.marks[i] is @state.selectedMark}
                 onClickDelete = {@onClickDelete} 
                 defaultMarkHeight = {100}
                 scrubberWidth = {64}
                 scrubberHeight = {16}
               >
-                {tool}
+                {mark}
               </TextRegionTool>
             ), @}
 

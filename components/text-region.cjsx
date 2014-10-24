@@ -21,6 +21,7 @@ module.exports = React.createClass
   getInitialState: ->
     x: @props.mark.x
     y: @props.mark.y
+
     markHeight: @props.defaultMarkHeight
     fillColor: 'rgba(0,0,0,0.5)'
     strokeColor: '#26baff'
@@ -68,22 +69,7 @@ module.exports = React.createClass
       lowerOffset: y-@state.y-@state.markHeight/2
     console.log "   LOWED SCRUBBER POSITION: ", @state.lowerOffset
 
-
-  handleMouseDown: ->
-    console.log 'MOUSE DOWN. CALL FOR BACKUP!'
-
-  foo: ->
-    console.log 'BAR'
-
   render: ->
-
-    console.log 'UPPER POSITION: ', @state.yUpper
-    console.log 'LOWER POSITION: ', @state.yLower
-
-    console.log 'UPPER OFFSET: ', @state.upperOffset    
-    console.log 'LOWER OFFSET: ', @state.lowerOffset
-
-    console.log 'MARK HEIGHT: ', @state.markHeight
 
     transform = "
       translate(#{@state.x}, #{@state.y})
@@ -109,7 +95,7 @@ module.exports = React.createClass
       data-selected = {@props.selected || null}
     >
       <Draggable 
-        onStart = {@props.select} 
+        onStart = {@props.select.bind null, @props.mark} 
         onDrag = {@handleDrag} >
         <rect 
           x           = 0
