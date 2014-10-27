@@ -37,6 +37,10 @@ module.exports = React.createClass
     @setState 
       x: x
       y: y
+      yUpper: @state.yUpper + @state.upperOffset
+      yLower: @state.yLower + @state.lowerOffset
+
+    console.log "[yUpper,yLower] = [#{@state.yUpper},#{@state.yLower}]"
 
   handleMouseOver: ->
     console.log 'onMouseOver()'
@@ -54,20 +58,25 @@ module.exports = React.createClass
     @updateMark @props.getEventOffset(e)
   
   handleTopResize: (e) ->
-    console.log 'TextRegion: handleTopResize()'
-    console.log "   CLICKED ON: (#{e.x},#{e.y})"
     {x,y} = @props.getEventOffset e
+
+    # return if @state.markHeight < 50
+    # console.log 'TextRegion: handleTopResize()'
+    # console.log "   CLICKED ON: (#{e.x},#{e.y})"
     @setState
       upperOffset: y-@state.y+@state.markHeight/2
-    console.log "   UPPER SCRUBBER POSITION: ", @state.upperOffset
+      markHeight: @state.markHeight-@state.upperOffset+@state.lowerOffset
+    # console.log "   UPPER SCRUBBER POSITION: ", @state.upperOffset
 
   handleBottomResize: (e) ->
-    console.log 'TextRegion: handleBottomResize()'
-    console.log "   CLICKED ON: (#{e.x},#{e.y})"
+    # console.log 'TextRegion: handleBottomResize()'
+    # console.log "   CLICKED ON: (#{e.x},#{e.y})"
     {x,y} = @props.getEventOffset e
     @setState
       lowerOffset: y-@state.y-@state.markHeight/2
-    console.log "   LOWED SCRUBBER POSITION: ", @state.lowerOffset
+      markHeight: @state.markHeight-@state.upperOffset+@state.lowerOffset
+
+    # console.log "   LOWER SCRUBBER POSITION: ", @state.lowerOffset
 
   render: ->
 
@@ -75,6 +84,8 @@ module.exports = React.createClass
       translate(#{@state.x}, #{@state.y})
       scale(#{1}, #{1})
     "
+
+    # console.log "HEIGHT: #{@state.markHeight-@state.upperOffset+@state.lowerOffset}"
 
     topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-@props.scrubberHeight/2+@state.upperOffset})"
     bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-@props.scrubberHeight/2+@state.lowerOffset})"
@@ -94,15 +105,16 @@ module.exports = React.createClass
       data-disabled = {@props.disabled || null} 
       data-selected = {@props.selected || null}
     >
-      <Draggable 
+      <Draggable
         onStart = {@props.select.bind null, @props.mark} 
         onDrag = {@handleDrag} >
         <rect 
+          className   = "mark-rectangle"
           x           = 0
           y           = 0
           viewBox     = {"0 0 @props.imageWidth @props.imageHeight"}
           width       = {@props.imageWidth}
-          height      = {@state.markHeight-@state.upperOffset+@state.lowerOffset}
+          height      = {@state.markHeight}
           fill        = {"rgba(0,0,0,0.5)"}
           stroke      = {@state.strokeColor}
           strokeWidth = {@state.strokeWidth}

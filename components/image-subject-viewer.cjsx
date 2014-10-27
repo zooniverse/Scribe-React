@@ -115,10 +115,14 @@ SubjectViewer = React.createClass
     timestamp = (new Date).toUTCString()
     key = @state.marks.length
     {x, y} = @getEventOffset e
+    yUpper = y-100/2
+    yLower = y+100/2
     console.log "CLICK (#{x},#{y})"
 
     marks = @state.marks
-    marks.push {x, y, key, timestamp}
+    marks.push {yUpper, yLower, x, y, key, timestamp}
+
+    console.log "NEW MARK ADDED: [#{yUpper},#{yLower}]"
 
     @setState marks: marks
     @selectMark @state.marks[@state.marks.length-1]
@@ -148,35 +152,31 @@ SubjectViewer = React.createClass
     # x: ((e.pageX - pageXOffset - rect.left) / horizontal) + @state.viewX
     # y: ((e.pageY - pageYOffset - rect.top) / vertical) + @state.viewY
 
-    x: ((e.pageX - pageXOffset - rect.left)) + @state.viewX
-    y: ((e.pageY - pageYOffset - rect.top)) + @state.viewY
+    x: Math.round ((e.pageX - pageXOffset - rect.left)) + @state.viewX
+    y: Math.round ((e.pageY - pageYOffset - rect.top)) + @state.viewY
 
   handleToolMouseDown: ->
     console.log 'handleToolMouseDown()'
 
   selectMark: (mark) ->
-    console.log 'selectMark()'
-    console.log     '> mark selected: ', mark.key
+    # # DEBUG CODE
+    # console.log 'selectMark()'
+    # console.log     '> mark selected: ', mark.key
     return if mark is @state.selectedMark 
     @setState selectedMark: mark
 
   onClickDelete: (key) ->
-    console.log 'STATE IS: ', @state
-    console.log "DELETING MARK WITH KEY: ", key
     marks = @state.marks
-    console.log 'MARKS::::DJSLKDJSLKDJSLKDJSDKLJ ', marks
     for mark, i in [ marks... ]
-      console.log 'CHECKING OUT MARK: ', mark
       if mark.key is key
-        console.log 'KEY MATCHED!!!!'
-        console.log '<<< BEFORE SPLICE >>>', marks
         marks.splice(i, 1)
-        console.log '<<< AFTER SPLICE >>>', marks
-
     @setState marks: marks
 
   render: ->
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
+
+    for mark in [ @state.marks... ]
+      console.log 'MARK: ', mark
 
     if @state.loading
       <div className="subject-container">
