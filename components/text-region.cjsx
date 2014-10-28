@@ -30,13 +30,6 @@ module.exports = React.createClass
     yUpper: @props.mark.y - @props.defaultMarkHeight/2
     yLower: @props.mark.y + @props.defaultMarkHeight/2
 
-  updateMark: ({x,y}) ->
-    # console.log 'updateMark() ', e
-    @setState 
-      centerX: x
-      centerY: y
-    console.log "UPDATED MARK CENTER: #{@state.centerY}"
-
   handleMouseOver: ->
     console.log 'onMouseOver()'
     @setState 
@@ -50,8 +43,12 @@ module.exports = React.createClass
       fillColor: 'rgba(0,0,0,0.5)'
 
   handleDrag: (e) ->
-    @updateMark @props.getEventOffset(e)
-  
+    {x,y} = @props.getEventOffset(e)
+    @setState 
+      centerX: x
+      centerY: y
+    console.log "UPDATED MARK CENTER: #{@state.centerY}"
+
   handleUpperResize: (e) ->
     {x,y} = @props.getEventOffset e
 
