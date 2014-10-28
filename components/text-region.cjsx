@@ -27,8 +27,8 @@ module.exports = React.createClass
     strokeColor: '#26baff'
     strokeWidth: 3
     offset: 0
-    yUpper: @props.mark.y - @props.defaultMarkHeight/2
-    yLower: @props.mark.y + @props.defaultMarkHeight/2
+    yUpper: Math.round( @props.mark.y - @props.defaultMarkHeight/2 )
+    yLower: Math.round( @props.mark.y + @props.defaultMarkHeight/2 )
 
   handleMouseOver: ->
     console.log 'onMouseOver()'
@@ -45,9 +45,12 @@ module.exports = React.createClass
   handleDrag: (e) ->
     {x,y} = @props.getEventOffset(e)
     @setState 
-      centerX: x
-      centerY: y
+      centerX: Math.round x
+      centerY: Math.round y
+      yUpper: Math.round( y - @state.markHeight/2 )
+      yLower: Math.round( y + @state.markHeight/2 )
     console.log "UPDATED MARK CENTER: #{@state.centerY}"
+    console.log "[yUpper,yLower]    : [#{@state.yUpper},#{@state.yLower}]"
 
   handleUpperResize: (e) ->
     {x,y} = @props.getEventOffset e
@@ -55,8 +58,8 @@ module.exports = React.createClass
     @setState
       offset: Math.round( y-@state.centerY+@state.markHeight/2 )
       markHeight: Math.round( Math.abs( @state.markHeight - @state.offset ) )
-      yUpper: y
-      # yLower: Math.abs( y + @state.markHeight )
+      yUpper: Math.round y
+      yLower: Math.abs( y + @state.markHeight )
     
     # DEBUG CODE
     # NOTE: yUpper and yLower are the same (refactor?)
@@ -74,8 +77,8 @@ module.exports = React.createClass
     @setState
       offset: Math.round( y-@state.centerY-@state.markHeight/2 )
       markHeight: Math.round( Math.abs( @state.markHeight + @state.offset ) )
-      # yUpper: y
-      yLower: Math.abs( y + @state.markHeight )
+      yUpper: y
+      yLower: Math.round( Math.abs( y + @state.markHeight ) )
     
     # DEBUG CODE
     # NOTE: yUpper and yLower are the same (refactor?)

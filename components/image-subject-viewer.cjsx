@@ -143,12 +143,8 @@ SubjectViewer = React.createClass
     @setState {viewX, viewY, viewWidth, viewHeight}
 
   getScale: ->
-    console.log '<<<<<<<<<< GET SCALE >>>>>>>>>>'
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
     rect ?= width: 0, height: 0
-
-    console.log 'rect.width = ', rect.width
-    console.log 'rect.height = ', rect.height
 
     horizontal: rect.width / @state.imageWidth
     vertical: rect.height / @state.imageHeight
@@ -168,9 +164,6 @@ SubjectViewer = React.createClass
     console.log 'handleToolMouseDown()'
 
   selectMark: (mark) ->
-    # # DEBUG CODE
-    # console.log 'selectMark()'
-    # console.log     '> mark selected: ', mark.key
     return if mark is @state.selectedMark 
     @setState selectedMark: mark
 
