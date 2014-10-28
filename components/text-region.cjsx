@@ -19,28 +19,23 @@ module.exports = React.createClass
       {x, y}
 
   getInitialState: ->
-    x: @props.mark.x
-    y: @props.mark.y
-
+    console.log "INITIAL (STATE.X, STATE.Y): (#{@props.mark.x},#{@props.mark.y})"
+    centerX: @props.mark.x
+    centerY: @props.mark.y
     markHeight: @props.defaultMarkHeight
     fillColor: 'rgba(0,0,0,0.5)'
     strokeColor: '#26baff'
     strokeWidth: 3
-    upperOffset: 0
-    lowerOffset: 0
-
+    offset: 0
     yUpper: @props.mark.y - @props.defaultMarkHeight/2
     yLower: @props.mark.y + @props.defaultMarkHeight/2
 
   updateMark: ({x,y}) ->
     # console.log 'updateMark() ', e
     @setState 
-      x: x
-      y: y
-      yUpper: @state.yUpper + @state.upperOffset
-      yLower: @state.yLower + @state.lowerOffset
-
-    console.log "[yUpper,yLower] = [#{@state.yUpper},#{@state.yLower}]"
+      centerX: x
+      centerY: y
+    console.log "UPDATED MARK CENTER: #{@state.centerY}"
 
   handleMouseOver: ->
     console.log 'onMouseOver()'
@@ -57,39 +52,45 @@ module.exports = React.createClass
   handleDrag: (e) ->
     @updateMark @props.getEventOffset(e)
   
-  handleTopResize: (e) ->
+  handleUpperResize: (e) ->
     {x,y} = @props.getEventOffset e
 
-    # return if @state.markHeight < 50
-    # console.log 'TextRegion: handleTopResize()'
-    # console.log "   CLICKED ON: (#{e.x},#{e.y})"
     @setState
-      upperOffset: y-@state.y+@state.markHeight/2
-      markHeight: @state.markHeight-@state.upperOffset+@state.lowerOffset
-    # console.log "   UPPER SCRUBBER POSITION: ", @state.upperOffset
+      offset: Math.round( y-@state.centerY+@state.markHeight/2 )
+      markHeight: Math.round( Math.abs( @state.markHeight - @state.offset ) )
+      yUpper: y
+      # yLower: Math.abs( y + @state.markHeight )
+    
+    # DEBUG CODE
+    # NOTE: yUpper and yLower are the same (refactor?)
+    console.log 'MARK CENTER             : ', @state.centerY
+    console.log '[yUpper,yLower]         : ', "[#{@state.yUpper},#{@state.yLower}]"
+    console.log 'DIST. CENTER (UPPER)    : ', @state.yUpper - @state.centerY
+    # console.log 'DIST. CENTER (LOWER)    : ', @state.yLower - @state.centerY
+    console.log 'MARK HEIGHT             : ', @state.markHeight
+    console.log 'OFFSET                  : ', @state.offset
+    console.log '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< HANDLE UPPER RESIZE()'
 
-  handleBottomResize: (e) ->
-    # console.log 'TextRegion: handleBottomResize()'
-    # console.log "   CLICKED ON: (#{e.x},#{e.y})"
+  handleLowerResize: (e) ->
     {x,y} = @props.getEventOffset e
-    @setState
-      lowerOffset: y-@state.y-@state.markHeight/2
-      markHeight: @state.markHeight-@state.upperOffset+@state.lowerOffset
 
-    # console.log "   LOWER SCRUBBER POSITION: ", @state.lowerOffset
+    @setState
+      offset: Math.round( y-@state.centerY-@state.markHeight/2 )
+      markHeight: Math.round( Math.abs( @state.markHeight + @state.offset ) )
+      # yUpper: y
+      yLower: Math.abs( y + @state.markHeight )
+    
+    # DEBUG CODE
+    # NOTE: yUpper and yLower are the same (refactor?)
+    console.log 'MARK CENTER             : ', @state.centerY
+    console.log '[yUpper,yLower]         : ', "[#{@state.yUpper},#{@state.yLower}]"
+    # console.log 'DIST. CENTER (UPPER)    : ', @state.yUpper - @state.centerY
+    console.log 'DIST. CENTER (LOWER)    : ', @state.yLower - @state.centerY
+    console.log 'MARK HEIGHT             : ', @state.markHeight
+    console.log 'OFFSET                  : ', @state.offset
+    console.log '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< HANDLE LOWER RESIZE()'
 
   render: ->
-
-    transform = "
-      translate(#{@state.x}, #{@state.y})
-      scale(#{1}, #{1})
-    "
-
-    # console.log "HEIGHT: #{@state.markHeight-@state.upperOffset+@state.lowerOffset}"
-
-    topResizeTransform = "translate(#{@props.imageWidth/2}, #{0-@props.scrubberHeight/2+@state.upperOffset})"
-    bottomResizeTransform = "translate(#{@props.imageWidth/2}, #{@state.markHeight-@props.scrubberHeight/2+@state.lowerOffset})"
-
     if @props.selected
       deleteButton = 
         <DeleteButton 
@@ -101,10 +102,11 @@ module.exports = React.createClass
 
     <g 
       className = "point drawing-tool" 
-      transform = {"translate(0, #{@state.y-@state.markHeight/2})"} 
+      transform = {"translate(0, #{@state.centerY-@state.markHeight/2})"} 
       data-disabled = {@props.disabled || null} 
       data-selected = {@props.selected || null}
     >
+
       <Draggable
         onStart = {@props.select.bind null, @props.mark} 
         onDrag = {@handleDrag} >
@@ -118,20 +120,22 @@ module.exports = React.createClass
           fill        = {"rgba(0,0,0,0.5)"}
           stroke      = {@state.strokeColor}
           strokeWidth = {@state.strokeWidth}
-          transform   = {"translate(0,#{@state.upperOffset})"}
+          transform   = {"translate(0,#{@state.offset})"}
         />
       </Draggable>
 
       <ResizeButton 
-        handleResize = {@handleTopResize} 
-        transform = {topResizeTransform} 
+        className = "upperResize"
+        handleResize = {@handleUpperResize} 
+        transform = {"translate( #{@props.imageWidth/2}, #{ @state.offset - @props.scrubberHeight/2 } )"} 
         scrubberHeight = {@props.scrubberHeight}
         scrubberWidth = {@props.scrubberWidth}
       />
 
       <ResizeButton 
-        handleResize = {@handleBottomResize} 
-        transform = {bottomResizeTransform} 
+        className = "lowerResize"
+        handleResize = {@handleLowerResize} 
+        transform = {"translate( #{@props.imageWidth/2}, #{ @state.offset + Math.round(@state.markHeight) - @props.scrubberHeight/2 } )"} 
         scrubberHeight = {@props.scrubberHeight}
         scrubberWidth = {@props.scrubberWidth}
       />

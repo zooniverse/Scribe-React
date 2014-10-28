@@ -130,7 +130,9 @@ SubjectViewer = React.createClass
     # @forceUpdate()
 
   handleInitDrag: (e) ->
-    # console.log 'handleInitDrag()'
+    console.log 'handleInitDrag()'
+    {x, y} = @getEventOffset e
+    console.log "DRAG (#{x},#{y})"
 
   handleInitRelease: (e) ->
     # console.log 'handleInitRelease()'
@@ -152,8 +154,8 @@ SubjectViewer = React.createClass
     # x: ((e.pageX - pageXOffset - rect.left) / horizontal) + @state.viewX
     # y: ((e.pageY - pageYOffset - rect.top) / vertical) + @state.viewY
 
-    x: Math.round ((e.pageX - pageXOffset - rect.left)) + @state.viewX
-    y: Math.round ((e.pageY - pageYOffset - rect.top)) + @state.viewY
+    x: ((e.pageX - pageXOffset - rect.left)) + @state.viewX
+    y: ((e.pageY - pageYOffset - rect.top)) + @state.viewY
 
   handleToolMouseDown: ->
     console.log 'handleToolMouseDown()'

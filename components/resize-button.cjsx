@@ -13,10 +13,6 @@ module.exports = React.createClass
     scrubberWidth: @props.scrubberWidth
     scrubberHeight: @props.scrubberHeight
 
-  handleDrag: (e) ->
-    console.log 'BAR ', e
-    @props.handleTopResize()
-
   render: ->
   
     <Draggable 
