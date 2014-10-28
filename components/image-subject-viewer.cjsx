@@ -94,7 +94,7 @@ SubjectViewer = React.createClass
         y_lower: mark.yLower
 
     console.log 'CLASSIFICATION: ', @state.classification
-      
+
     console.log JSON.stringify @state.classification # DEBUG CODE
     @state.classification.send()
     @setState marks: [] # clear marks for next subject
@@ -112,6 +112,7 @@ SubjectViewer = React.createClass
     console.log 'handleInitStart()'
 
     {horizontal, vertical} = @getScale()
+    console.log "(horizontal,vertical) = (#{horizontal},#{vertical})"
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
     timestamp = (new Date).toUTCString()
     key = @state.marks.length
@@ -142,21 +143,26 @@ SubjectViewer = React.createClass
     @setState {viewX, viewY, viewWidth, viewHeight}
 
   getScale: ->
+    console.log '<<<<<<<<<< GET SCALE >>>>>>>>>>'
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
     rect ?= width: 0, height: 0
-    horizontal: rect.width / @state.viewWidth
-    vertical: rect.height / @state.viewHeight
+
+    console.log 'rect.width = ', rect.width
+    console.log 'rect.height = ', rect.height
+
+    horizontal: rect.width / @state.imageWidth
+    vertical: rect.height / @state.imageHeight
 
   getEventOffset: (e) ->
     rect = @refs.sizeRect.getDOMNode().getBoundingClientRect()
     
     # console.log 'RECT: ', rect
-    # {horizontal, vertical} = @getScale()
-    # x: ((e.pageX - pageXOffset - rect.left) / horizontal) + @state.viewX
-    # y: ((e.pageY - pageYOffset - rect.top) / vertical) + @state.viewY
+    {horizontal, vertical} = @getScale()
+    x: ((e.pageX - pageXOffset - rect.left) / horizontal) + @state.viewX
+    y: ((e.pageY - pageYOffset - rect.top) / vertical) + @state.viewY
 
-    x: ((e.pageX - pageXOffset - rect.left)) + @state.viewX
-    y: ((e.pageY - pageYOffset - rect.top)) + @state.viewY
+    # x: ((e.pageX - pageXOffset - rect.left)) + @state.viewX
+    # y: ((e.pageY - pageYOffset - rect.top)) + @state.viewY
 
   handleToolMouseDown: ->
     console.log 'handleToolMouseDown()'
@@ -176,6 +182,7 @@ SubjectViewer = React.createClass
     @setState marks: marks
 
   render: ->
+    console.log 'imageWidth: ', @state.imageWidth
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
 
     for mark in [ @state.marks... ]
