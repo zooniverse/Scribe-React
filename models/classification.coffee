@@ -7,6 +7,7 @@ class Classification
     @annotations ?= []
 
   annotate: (annotation) ->
+    console.log 'FOO!'
     @annotations.push annotation
     return annotation
 
@@ -14,7 +15,7 @@ class Classification
     subject_id = @subject.id
 
     output = classification:
-      subject_id: subject_id
+      subject: @subject
       annotations: @annotations.concat [{@started_at, @finished_at}, {@user_agent}]
 
     for key, value of @generic

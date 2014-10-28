@@ -13,8 +13,6 @@ TextRegionTool                = require './text-region'
 PointTool                     = require './point'
 Classification                = require '../models/classification'
 
-classification = null
-
 ImageSubjectViewer = React.createClass # rename to Classifier
   displayName: 'ImageSubjectViewer'
 
@@ -43,6 +41,8 @@ SubjectViewer = React.createClass
     viewWidth: 0
     viewHeight: 0
 
+    classification: null
+
     selectedMark: null # TODO: currently not in use
 
   componentDidMount: ->
@@ -58,7 +58,7 @@ SubjectViewer = React.createClass
         # console.log 'FETCHED SUBJECTS: ', subject.location for subject in data
 
         @setState subjects: data, =>
-          classification = new Classification @state.subjects[0]
+          @state.classification = new Classification @state.subjects[0]
           @loadImage @state.subjects[0].location
 
         # console.log 'Fetched Images.' # DEBUG CODE
@@ -87,15 +87,16 @@ SubjectViewer = React.createClass
             # console.log "Finished Loading."
 
   nextSubject: () ->
-    console.log JSON.stringify classification # DEBUG CODE
-
     for mark in [ @state.marks... ]
-      classification.annotate
+      @state.classification.annotate
         timestamp: mark.timestamp
-        x: mark.x
-        y: mark.y
+        y_upper: mark.yUpper
+        y_lower: mark.yLower
 
-    classification.send()
+    console.log 'CLASSIFICATION: ', @state.classification
+      
+    console.log JSON.stringify @state.classification # DEBUG CODE
+    @state.classification.send()
     @setState marks: [] # clear marks for next subject
 
     # prepare new classification
@@ -105,7 +106,7 @@ SubjectViewer = React.createClass
     else
       @loadImage @state.subjects[0].location
 
-    classification = new Classification @state.subjects[0]
+    @state.classification = new Classification @state.subjects[0]
 
   handleInitStart: (e) ->
     console.log 'handleInitStart()'
