@@ -43,10 +43,9 @@ module.exports = React.createClass
       fillColor: 'rgba(0,0,0,0.5)'
 
   handleDrag: (e) ->
-    console.log 'IMAGE HEIGHT: ', @props.imageHeight
     {x,y} = @props.getEventOffset(e)
 
-    # prevent dragging beyong image bounds
+    # prevent dragging mark beyond image bounds
     return if (y-@state.markHeight/2) < 0 
     return if (y+@state.markHeight/2) > @props.imageHeight
 
@@ -55,11 +54,17 @@ module.exports = React.createClass
       centerY: Math.round y
       yUpper: Math.round( y - @state.markHeight/2 )
       yLower: Math.round( y + @state.markHeight/2 )
+
+    # DEBUG CODE
     console.log "UPDATED MARK CENTER: #{@state.centerY}"
     console.log "[yUpper,yLower]    : [#{@state.yUpper},#{@state.yLower}]"
 
   handleUpperResize: (e) ->
     {x,y} = @props.getEventOffset e
+
+    # prevent dragging mark beyond image bounds
+    return if y < 0 
+    return if y > @props.imageHeight
 
     @setState
       offset: Math.round( y-@state.centerY+@state.markHeight/2 )
@@ -79,6 +84,10 @@ module.exports = React.createClass
 
   handleLowerResize: (e) ->
     {x,y} = @props.getEventOffset e
+
+    # prevent dragging mark beyond image bounds
+    return if y < 0 
+    return if y > @props.imageHeight
 
     @setState
       offset: Math.round( y-@state.centerY-@state.markHeight/2 )
