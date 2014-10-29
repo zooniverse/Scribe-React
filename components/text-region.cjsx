@@ -43,7 +43,13 @@ module.exports = React.createClass
       fillColor: 'rgba(0,0,0,0.5)'
 
   handleDrag: (e) ->
+    console.log 'IMAGE HEIGHT: ', @props.imageHeight
     {x,y} = @props.getEventOffset(e)
+
+    # prevent dragging beyong image bounds
+    return if (y-@state.markHeight/2) < 0 
+    return if (y+@state.markHeight/2) > @props.imageHeight
+
     @setState 
       centerX: Math.round x
       centerY: Math.round y
