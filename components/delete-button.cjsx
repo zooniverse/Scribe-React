@@ -8,8 +8,8 @@ module.exports = React.createClass
   render: ->
     fillColor = '#26baff'
     strokeColor = '#000'
-    strokeWidth = 2
-    radius = 10
+    strokeWidth = 3
+    radius = 15
 
     cross = "
       M #{-radius * 0.6 } 0
