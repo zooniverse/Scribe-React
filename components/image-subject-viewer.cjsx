@@ -112,19 +112,17 @@ SubjectViewer = React.createClass
     console.log 'handleInitStart()'
 
     {horizontal, vertical} = @getScale()
-    console.log "(horizontal,vertical) = (#{horizontal},#{vertical})"
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
     timestamp = (new Date).toUTCString()
     key = @state.marks.length
     {x, y} = @getEventOffset e
-    yUpper = y-100/2
-    yLower = y+100/2
-    console.log "CLICK (#{x},#{y})"
+    yUpper = y-50/2
+    yLower = y+50/2
 
     marks = @state.marks
     marks.push {yUpper, yLower, x, y, key, timestamp}
 
-    console.log "NEW MARK ADDED: [#{yUpper},#{yLower}]"
+    # console.log "NEW MARK ADDED: [#{yUpper},#{yLower}]"
 
     @setState marks: marks
     @selectMark @state.marks[@state.marks.length-1]
@@ -133,8 +131,23 @@ SubjectViewer = React.createClass
 
   handleInitDrag: (e) ->
     console.log 'handleInitDrag()'
-    {x, y} = @getEventOffset e
-    console.log "DRAG (#{x},#{y})"
+    {x,y} = @getEventOffset e
+
+    # # DEBUG CODE
+    # console.log "DRAG (#{x},#{y})"
+    # console.log 'SELECTED MARK CENTER: ', @state.selectedMark.y
+    # console.log 'SELECTED MARK DISTANCE FROM CENTER: ', Math.abs( @state.selectedMark.y - y )
+
+    dist = Math.abs( @state.selectedMark.y - y )
+
+    if dist > 50/2
+      currentMark = @state.selectedMark
+      currentMark.yUpper = currentMark.y - dist
+      currentMark.yLower = currentMark.y + dist
+
+      @setState 
+        selectedMark: currentMark, =>
+          console.log 'STATE: ', @state.selectedMark
 
   handleInitRelease: (e) ->
     # console.log 'handleInitRelease()'
@@ -175,7 +188,7 @@ SubjectViewer = React.createClass
     @setState marks: marks
 
   render: ->
-    console.log 'imageWidth: ', @state.imageWidth
+    console.log 'subject-viewer render():'
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
 
     for mark in [ @state.marks... ]
@@ -229,8 +242,7 @@ SubjectViewer = React.createClass
                 getEventOffset = {@getEventOffset}
                 select = {@selectMark.bind null, mark}
                 selected = {mark is @state.selectedMark}
-                onClickDelete = {@onClickDelete} 
-                defaultMarkHeight = {100}
+                onClickDelete = {@onClickDelete}
                 scrubberWidth = {64}
                 scrubberHeight = {16}
               >

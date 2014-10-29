@@ -19,6 +19,7 @@ module.exports = React.createClass
       {x, y}
 
   getInitialState: ->
+    console.log "PROPS [#{@props.mark.yUpper},#{@props.mark.yLower}]"
     console.log "INITIAL (STATE.X, STATE.Y): (#{@props.mark.x},#{@props.mark.y})"
     centerX: @props.mark.x
     centerY: @props.mark.y
@@ -27,8 +28,15 @@ module.exports = React.createClass
     strokeColor: '#26baff'
     strokeWidth: 3
     offset: 0
-    yUpper: Math.round( @props.mark.y - @props.defaultMarkHeight/2 )
-    yLower: Math.round( @props.mark.y + @props.defaultMarkHeight/2 )
+    yUpper: @props.mark.yUpper
+    yLower: @props.mark.yLower
+    markHeight: @props.mark.yLower - @props.mark.yUpper
+
+  componentWillReceiveProps: ->
+    @setState
+      yUpper: @props.mark.yUpper
+      yLower: @props.mark.yLower
+      markHeight: @props.mark.yLower - @props.mark.yUpper
 
   handleMouseOver: ->
     console.log 'onMouseOver()'
@@ -105,7 +113,11 @@ module.exports = React.createClass
     console.log 'OFFSET                  : ', @state.offset
     console.log '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< HANDLE LOWER RESIZE()'
 
+
+
   render: ->
+    console.log 'MARK HEIGHT: ', @state.markHeight
+
     if @props.selected
       deleteButton = 
         <DeleteButton 
@@ -135,11 +147,11 @@ module.exports = React.createClass
           fill        = {"rgba(0,0,0,0.5)"}
           stroke      = {@state.strokeColor}
           strokeWidth = {@state.strokeWidth}
-          transform   = {"translate(0,#{@state.offset})"}
         />
       </Draggable>
 
       <ResizeButton 
+        viewBox     = {"0 0 @props.imageWidth @props.imageHeight"}
         className = "upperResize"
         handleResize = {@handleUpperResize} 
         transform = {"translate( #{@props.imageWidth/2}, #{ @state.offset - @props.scrubberHeight/2 } )"} 
