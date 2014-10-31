@@ -194,13 +194,12 @@ SubjectViewer = React.createClass
   beginTextEntry: ->
     console.log 'beginTextEntry()'
     return unless @state.marks.length > 0    
-    @setState workflow: "text-entry"
-    @selectMark @state.marks[0]
-
-    {horizontal, vertical} = @getScale()
-    console.log "VERTICAL_SCALE: ", vertical
-    console.log '<<<<<<<<< SCROLLING TO: ', @state.selectedMark.y
-    $('html, body').animate scrollTop: vertical*@state.selectedMark.y-window.innerHeight/2+80, 500
+    @setState 
+      workflow: "text-entry"
+      selectedMark: @state.marks[0], =>
+        console.log 'SELECTED MARK: ', @state.selectedMark
+        {horizontal, vertical} = @getScale()
+        $('html, body').animate scrollTop: vertical*@state.selectedMark.y-window.innerHeight/2+80, 500
 
   nextTextEntry: ->
     console.log "nextTextEntry()"
@@ -211,12 +210,10 @@ SubjectViewer = React.createClass
       @setState workflow: "finished"
       return
 
-    @selectMark @state.marks[key+1]
-
-    {horizontal, vertical} = @getScale()
-    console.log "VERTICAL_SCALE: ", vertical
-    console.log '<<<<<<<<< SCROLLING TO: ', @state.selectedMark.y
-    $('html, body').animate scrollTop: vertical*@state.selectedMark.y-window.innerHeight/2+80, 500
+    @setState selectedMark: @state.marks[key+1], =>
+      console.log 'SELECTED MARK: ', @state.selectedMark
+      {horizontal, vertical} = @getScale()
+      $('html, body').animate scrollTop: vertical*@state.selectedMark.y-window.innerHeight/2+80, 500
 
   render: ->
     console.log 'subject-viewer render():'
