@@ -208,6 +208,12 @@ SubjectViewer = React.createClass
 
     @selectMark @state.marks[key+1]
 
+    {horizontal, vertical} = @getScale()
+    console.log "VERTICAL_SCALE: ", vertical
+    console.log '<<<<<<<<< SCROLLING TO: ', @state.selectedMark.y
+    window.scrollTo 0, @state.selectedMark.y-window.innerHeight/2+80
+    #$("html, body").animate scrollTop: @state.selectedMark.y, 500 
+
   render: ->
     console.log 'subject-viewer render():'
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
