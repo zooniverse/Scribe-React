@@ -200,7 +200,7 @@ SubjectViewer = React.createClass
     {horizontal, vertical} = @getScale()
     console.log "VERTICAL_SCALE: ", vertical
     console.log '<<<<<<<<< SCROLLING TO: ', @state.selectedMark.y
-    $('html, body').animate scrollTop: @state.selectedMark.y-window.innerHeight/2+80, 500
+    $('html, body').animate scrollTop: vertical*@state.selectedMark.y-window.innerHeight/2+80, 500
 
   nextTextEntry: ->
     console.log "nextTextEntry()"
@@ -216,7 +216,7 @@ SubjectViewer = React.createClass
     {horizontal, vertical} = @getScale()
     console.log "VERTICAL_SCALE: ", vertical
     console.log '<<<<<<<<< SCROLLING TO: ', @state.selectedMark.y
-    $('html, body').animate scrollTop: @state.selectedMark.y-window.innerHeight/2+80, 500
+    $('html, body').animate scrollTop: vertical*@state.selectedMark.y-window.innerHeight/2+80, 500
 
   render: ->
     console.log 'subject-viewer render():'
