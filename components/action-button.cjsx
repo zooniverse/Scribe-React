@@ -12,9 +12,10 @@ ActionButton = React.createClass
 
   render: ->
     if @props.loading
+      console.log 'LOADING...'
       <a onClick={@handleClick} className="button white action-button disabled">LOADING...</a>
     else
-      <a onClick={@handleClick} className="button white action-button">NEXT</a>
+      <a onClick={@handleClick} className="button white action-button">{@props.label}</a>
 
 
 module.exports = ActionButton

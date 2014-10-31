@@ -5,7 +5,7 @@ Draggable = require '../lib/draggable'
 DeleteButton = require './delete-button'
 ResizeButton = require './resize-button'
 
-module.exports = React.createClass
+TextRegionTool = React.createClass
   displayName: 'TextRegionTool'
 
   statics:
@@ -169,4 +169,6 @@ module.exports = React.createClass
 
       {deleteButton}
     </g>
+
+module.exports = TextRegionTool
   

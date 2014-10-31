@@ -41,6 +41,8 @@ SubjectViewer = React.createClass
     viewWidth: 0
     viewHeight: 0
 
+    workflow: "text-region"
+
     classification: null
 
     selectedMark: null # TODO: currently not in use
@@ -97,7 +99,9 @@ SubjectViewer = React.createClass
 
     console.log JSON.stringify @state.classification # DEBUG CODE
     @state.classification.send()
-    @setState marks: [] # clear marks for next subject
+    @setState
+      workflow: "text-region" 
+      marks: [] # clear marks for next subject
 
     # prepare new classification
     if @state.subjects.shift() is undefined or @state.subjects.length <= 0
@@ -187,6 +191,23 @@ SubjectViewer = React.createClass
         marks.splice(i, 1)
     @setState marks: marks
 
+  beginTextEntry: ->
+    console.log 'beginTextEn'
+    return unless @state.marks.length > 0    
+    @setState workflow: "text-entry"
+    @selectMark @state.marks[0]
+
+  nextTextEntry: ->
+    console.log "nextTextEntry()"
+    key = @state.selectedMark.key
+    
+    if key+1 > @state.marks.length-1
+      console.log "That's all the marks for now!"
+      @setState workflow: "finished"
+      return
+
+    @selectMark @state.marks[key+1]
+
   render: ->
     console.log 'subject-viewer render():'
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
@@ -194,6 +215,9 @@ SubjectViewer = React.createClass
     for mark in [ @state.marks... ]
       console.log 'MARK: ', mark
 
+
+
+    # LOADING
     if @state.loading
       <div className="subject-container">
         <div className="marking-surface">
@@ -201,11 +225,25 @@ SubjectViewer = React.createClass
         </div>       
         <p>{@state.subjects[0].location}</p>
         <div className="subject-ui">
-          <ActionButton onActionSubmit={@nextSubject} loading={@state.loading} />
+          <ActionButton loading={@state.loading} />
         </div>
       </div>
 
     else
+
+      if @state.marks.length is 0
+        action_button =  <ActionButton label={"NEXT PAGE"} onActionSubmit={@nextSubject} />
+      else if @state.workflow is "finished"
+        action_button =  <ActionButton label={"FINISH"} onActionSubmit={@nextSubject} />
+
+      else if @state.marks.length > 0
+        
+        if @state.workflow is "text-entry"
+          console.log 'TEXT ENTRY TIME!'
+          action_button = <ActionButton label={"NEXT"} onActionSubmit={@nextTextEntry} />
+        else
+          action_button =  <ActionButton label={"FINISHED MARKING"} onActionSubmit={@beginTextEntry} />
+      
       <div className="subject-container">
         <div className="marking-surface">
           
@@ -249,13 +287,12 @@ SubjectViewer = React.createClass
               </TextRegionTool>
             ), @}
 
-
           </svg>
 
         </div>
         <p>{@state.subjects[0].location}</p>
         <div className="subject-ui">
-          <ActionButton onActionSubmit={@nextSubject} loading={@state.loading} />
+          {action_button}
         </div>
       </div>
 
