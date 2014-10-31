@@ -192,15 +192,20 @@ SubjectViewer = React.createClass
     @setState marks: marks
 
   beginTextEntry: ->
-    console.log 'beginTextEn'
+    console.log 'beginTextEntry()'
     return unless @state.marks.length > 0    
     @setState workflow: "text-entry"
     @selectMark @state.marks[0]
 
+    {horizontal, vertical} = @getScale()
+    console.log "VERTICAL_SCALE: ", vertical
+    console.log '<<<<<<<<< SCROLLING TO: ', @state.selectedMark.y
+    $('html, body').animate scrollTop: @state.selectedMark.y-window.innerHeight/2+80, 500
+
   nextTextEntry: ->
     console.log "nextTextEntry()"
-    key = @state.selectedMark.key
     
+    key = @state.selectedMark.key
     if key+1 > @state.marks.length-1
       console.log "That's all the marks for now!"
       @setState workflow: "finished"
@@ -211,17 +216,11 @@ SubjectViewer = React.createClass
     {horizontal, vertical} = @getScale()
     console.log "VERTICAL_SCALE: ", vertical
     console.log '<<<<<<<<< SCROLLING TO: ', @state.selectedMark.y
-    window.scrollTo 0, @state.selectedMark.y-window.innerHeight/2+80
-    #$("html, body").animate scrollTop: @state.selectedMark.y, 500 
+    $('html, body').animate scrollTop: @state.selectedMark.y-window.innerHeight/2+80, 500
 
   render: ->
     console.log 'subject-viewer render():'
     viewBox = [0, 0, @state.imageWidth, @state.imageHeight]
-
-    for mark in [ @state.marks... ]
-      console.log 'MARK: ', mark
-
-
 
     # LOADING
     if @state.loading

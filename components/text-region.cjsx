@@ -144,7 +144,7 @@ TextRegionTool = React.createClass
           viewBox     = {"0 0 @props.imageWidth @props.imageHeight"}
           width       = {@props.imageWidth}
           height      = {@state.markHeight}
-          fill        = {"rgba(0,0,0,0.5)"}
+          fill        = {if @props.selected then "rgba(10,10,200,0.25)" else "rgba(0,0,0,0.5)"}
           stroke      = {@state.strokeColor}
           strokeWidth = {@state.strokeWidth}
         />
