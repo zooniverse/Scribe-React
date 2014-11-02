@@ -115,6 +115,7 @@ SubjectViewer = React.createClass
 
   handleInitStart: (e) ->
     console.log 'handleInitStart()'
+    return if @state.workflow is "text-entry"
 
     {horizontal, vertical} = @getScale()
     rect = @refs.sizeRect?.getDOMNode().getBoundingClientRect()
