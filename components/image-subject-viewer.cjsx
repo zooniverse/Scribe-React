@@ -52,6 +52,20 @@ SubjectViewer = React.createClass
     @setView 0, 0, @state.imageWidth, @state.imageHeight
     @fetchSubjects()
 
+    window.addEventListener "resize", this.updateDimensions
+
+  componentWillMount: ->
+    @updateDimensions()
+    
+  componentWillUnmount: ->
+    window.removeEventListener "resize", this.updateDimensions
+
+  updateDimensions: ->
+    console.log 'updating dimensions'
+    @setState
+      windowInnerWidth: window.innerWidth 
+      windowInnerHeight: window.innerHeight
+
   fetchSubjects: ->
     $.ajax
       url: @props.endpoint
@@ -299,7 +313,7 @@ SubjectViewer = React.createClass
             console.log ">>>>>>>>> TOP: ", @getScale().vertical * @state.selectedMark.y - window.innerHeight/2 + 8
             <TextEntryTool 
               top={ @getScale().vertical * @state.selectedMark.yLower + 20 } 
-              left={window.innerWidth/2} 
+              left={@state.windowInnerWidth/2 - 200} 
             /> 
           }
 

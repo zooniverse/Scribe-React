@@ -11,14 +11,15 @@ TextEntryTool = React.createClass
     @setProps
       top: @props.top
       left: @props.left
-
-    @forceUpdate()
-
+    
   render: ->
 
     style =
       top: "#{@props.top}"
       left: "#{@props.left}"
+      'background-color': 'rgba(0,0,0,0.80)'
+      'border-radius': '10px'
+      'box-shadow': '4px 4px 10px #000'
 
     <div className="text-entry" style={style}>
       <div className="left">
