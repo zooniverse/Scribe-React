@@ -25,10 +25,12 @@ module.exports = React.createClass
         stroke      = {@state.strokeColor} 
         strokeWidth = {@state.strokeWidth} >
         
-        <rect
-          width  = {@state.scrubberWidth}
-          height = {@state.scrubberHeight} 
-          fill   = {@state.fillColor} 
-        />
+        { if @props.workflow is "text-region"
+          <rect
+            width  = {@state.scrubberWidth}
+            height = {@state.scrubberHeight} 
+            fill   = {@state.fillColor} 
+          />
+        }
       </g>
     </Draggable>

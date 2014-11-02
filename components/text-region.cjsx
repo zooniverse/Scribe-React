@@ -51,6 +51,7 @@ TextRegionTool = React.createClass
       fillColor: 'rgba(0,0,0,0.5)'
 
   handleDrag: (e) ->
+    return if @props.workflow isnt "text-region"
     {x,y} = @props.getEventOffset(e)
 
     # prevent dragging mark beyond image bounds
@@ -68,6 +69,8 @@ TextRegionTool = React.createClass
     console.log "[yUpper,yLower]    : [#{@state.yUpper},#{@state.yLower}]"
 
   handleUpperResize: (e) ->
+    return if @props.workflow isnt "text-region"
+
     {x,y} = @props.getEventOffset e
 
     # prevent dragging mark beyond image bounds
@@ -91,6 +94,8 @@ TextRegionTool = React.createClass
     console.log '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< HANDLE UPPER RESIZE()'
 
   handleLowerResize: (e) ->
+    return if @props.workflow isnt "text-region"
+
     {x,y} = @props.getEventOffset e
 
     # prevent dragging mark beyond image bounds
@@ -122,7 +127,8 @@ TextRegionTool = React.createClass
       deleteButton = 
         <DeleteButton 
           transform = "translate(25, #{@state.markHeight/2})" 
-          onClick = {@props.onClickDelete.bind null, @props.key} 
+          onClick = {@props.onClickDelete.bind null, @props.key}
+          workflow = {@props.workflow}
         />
     else
       deleteButton = null
@@ -157,6 +163,7 @@ TextRegionTool = React.createClass
         transform = {"translate( #{@props.imageWidth/2}, #{ @state.offset - @props.scrubberHeight/2 } )"} 
         scrubberHeight = {@props.scrubberHeight}
         scrubberWidth = {@props.scrubberWidth}
+        workflow = {@props.workflow}
       />
 
       <ResizeButton 
@@ -165,6 +172,7 @@ TextRegionTool = React.createClass
         transform = {"translate( #{@props.imageWidth/2}, #{ @state.offset + Math.round(@state.markHeight) - @props.scrubberHeight/2 } )"} 
         scrubberHeight = {@props.scrubberHeight}
         scrubberWidth = {@props.scrubberWidth}
+        workflow = {@props.workflow}
       />
 
       {deleteButton}

@@ -287,6 +287,7 @@ SubjectViewer = React.createClass
                 onClickDelete = {@onClickDelete}
                 scrubberWidth = {64}
                 scrubberHeight = {16}
+                workflow = {@state.workflow}
               >
               </TextRegionTool>
             ), @}
@@ -297,7 +298,7 @@ SubjectViewer = React.createClass
           { if @state.workflow is "text-entry"
             console.log ">>>>>>>>> TOP: ", @getScale().vertical * @state.selectedMark.y - window.innerHeight/2 + 8
             <TextEntryTool 
-              top={ @getScale().vertical * @state.selectedMark.yLower + 80 } 
+              top={ @getScale().vertical * @state.selectedMark.yLower + 20 } 
               left={window.innerWidth/2} 
             /> 
           }

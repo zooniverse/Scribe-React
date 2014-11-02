@@ -5,6 +5,15 @@ Draggable = require '../lib/draggable'
 TextEntryTool = React.createClass
   displayName: 'TextEntryTool'
 
+  componentWillReceiveProps: ->
+    return
+    console.log 'RECEIVING PROPS...'
+    @setProps
+      top: @props.top
+      left: @props.left
+
+    @forceUpdate()
+
   render: ->
 
     style =

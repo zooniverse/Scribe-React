@@ -6,6 +6,8 @@ module.exports = React.createClass
   displayName: 'DeleteButton'
 
   render: ->
+    if @props.workflow isnt "text-region"
+      return null
     fillColor = '#26baff'
     strokeColor = '#000'
     strokeWidth = 3
