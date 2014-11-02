@@ -297,7 +297,7 @@ SubjectViewer = React.createClass
           { if @state.workflow is "text-entry"
             console.log ">>>>>>>>> TOP: ", @getScale().vertical * @state.selectedMark.y - window.innerHeight/2 + 8
             <TextEntryTool 
-              top={ @state.selectedMark.yLower + 120 } 
+              top={ @getScale().vertical * @state.selectedMark.yLower + 80 } 
               left={window.innerWidth/2} 
             /> 
           }
