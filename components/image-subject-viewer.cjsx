@@ -10,6 +10,7 @@ LoadingIndicator              = require './loading-indicator'
 SubjectMetadata               = require './subject-metadata'
 ActionButton                  = require './action-button'
 TextRegionTool                = require './text-region'
+TextEntryTool                = require './text-entry'
 PointTool                     = require './point'
 Classification                = require '../models/classification'
 
@@ -241,7 +242,6 @@ SubjectViewer = React.createClass
       else if @state.marks.length > 0
         
         if @state.workflow is "text-entry"
-          console.log 'TEXT ENTRY TIME!'
           action_button = <ActionButton label={"NEXT"} onActionSubmit={@nextTextEntry} />
         else
           action_button =  <ActionButton label={"FINISHED MARKING"} onActionSubmit={@beginTextEntry} />
@@ -273,6 +273,7 @@ SubjectViewer = React.createClass
             </Draggable>
 
             { @state.marks.map ((mark, i) ->
+
               <TextRegionTool 
                 key = {mark.key} 
                 mark = {mark}
@@ -289,7 +290,16 @@ SubjectViewer = React.createClass
               </TextRegionTool>
             ), @}
 
+
           </svg>
+
+          { if @state.workflow is "text-entry"
+            console.log ">>>>>>>>> TOP: ", @getScale().vertical * @state.selectedMark.y - window.innerHeight/2 + 8
+            <TextEntryTool 
+              top={ @state.selectedMark.yLower + 120 } 
+              left={window.innerWidth/2} 
+            /> 
+          }
 
         </div>
         <p>{@state.subjects[0].location}</p>
